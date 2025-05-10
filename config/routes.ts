@@ -99,6 +99,13 @@ export default [
         path: '/form/advanced-form',
         component: './form/advanced-form',
       },
+      {
+        name: 'create-kb-form',
+        icon: 'gold',
+        path: '/form/create-kb-form',
+        component: './form/create-kb-form',
+        hideInMenu: true,
+      },
     ],
   },
   {
@@ -159,7 +166,7 @@ export default [
       },
       {
         name: 'kb-list',
-        icon: 'GoldOutlined',
+        icon: 'gold',
         path: '/list/kb-list',
         component: './list/kb-list',
       },

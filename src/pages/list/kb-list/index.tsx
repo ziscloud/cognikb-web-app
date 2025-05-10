@@ -1,17 +1,18 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
-import { useRequest } from '@umijs/max';
+import { Link, useRequest } from '@umijs/max';
 import { Button, Card, List, Typography } from 'antd';
 import type { KnowledgeBaseListItemDataType } from './data.d';
 import { queryFakeList } from './service';
 import useStyles from './style.style';
+
 const { Paragraph } = Typography;
 const CardList = () => {
   const { styles } = useStyles();
   const { data, loading } = useRequest(() => {
     return queryFakeList({
       page: 1,
-      size: 10
+      size: 10,
     });
   });
   console.log(data);
@@ -70,7 +71,11 @@ const CardList = () => {
                   <Card
                     hoverable
                     className={styles.card}
-                    actions={[<a key="option1">知识库构建</a>, <a key="option2">知识问答</a>, <a key="option3">知识库配置</a>]}
+                    actions={[
+                      <a key="option1">知识库构建</a>,
+                      <a key="option2">知识问答</a>,
+                      <a key="option3">知识库配置</a>,
+                    ]}
                   >
                     <Card.Meta
                       avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
@@ -92,9 +97,11 @@ const CardList = () => {
             }
             return (
               <List.Item>
-                <Button type="dashed" className={styles.newButton}>
-                  <PlusOutlined /> 新增产品
-                </Button>
+                <Link to="/form/create-kb-form">
+                  <Button type="dashed" className={styles.newButton}>
+                    <PlusOutlined /> 新建知识库
+                  </Button>
+                </Link>
               </List.Item>
             );
           }}
