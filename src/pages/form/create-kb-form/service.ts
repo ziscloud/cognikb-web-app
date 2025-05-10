@@ -1,6 +1,6 @@
 import { request } from '@umijs/max';
 
-export async function fakeSubmitForm(body: any, options?: { [key: string]: any }) {
+export async function createProject(body: any, options?: { [key: string]: any }) {
   return request('/api/v1/projects', {
     method: 'POST',
     data: body,

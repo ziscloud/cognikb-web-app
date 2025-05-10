@@ -74,7 +74,7 @@ const CardList = () => {
                     actions={[
                       <a key="option1">知识库构建</a>,
                       <a key="option2">知识问答</a>,
-                      <a key="option3">知识库配置</a>,
+                      <Link key="option3" to={`/form/edit-kb-form?projectId=${item.id}`}>知识库配置</Link>,
                     ]}
                   >
                     <Card.Meta

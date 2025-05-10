@@ -106,6 +106,13 @@ export default [
         component: './form/create-kb-form',
         hideInMenu: true,
       },
+      {
+        name: 'edit-kb-form',
+        icon: 'gold',
+        path: '/form/edit-kb-form',
+        component: './form/edit-kb-form',
+        hideInMenu: true,
+      },
     ],
   },
   {

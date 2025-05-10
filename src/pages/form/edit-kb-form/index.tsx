@@ -7,16 +7,19 @@ import {
   ProFormTextArea,
   ProSkeleton,
 } from '@ant-design/pro-components';
-import { useRequest } from '@umijs/max';
-import { Card, message } from 'antd';
+import { useNavigate, useRequest, useSearchParams } from '@umijs/max';
+import { Button, Card, message } from 'antd';
 import { FC, useEffect, useState } from 'react';
-import { createProject, queryConfig } from './service';
+import { deleteProjectConfig, queryProjectConfig, updateProjectConfig } from './service';
 
 const BasicForm: FC<Record<string, any>> = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [searchParams, setSearchParams] = useSearchParams();
   const [graphStore, setGraphStore] = useState<API.GraphStore>();
   const [vectorizer, setVectorizer] = useState<API.VectorizerConfig>();
   const [prompt, setPrompt] = useState<API.PromptConfig>();
-  const { run } = useRequest(createProject, {
+  const navigate = useNavigate();
+  const { run: updateProject } = useRequest(updateProjectConfig, {
     manual: true,
     onSuccess: () => {
       message.success('提交成功');
@@ -26,10 +29,20 @@ const BasicForm: FC<Record<string, any>> = () => {
     },
   });
 
+  const { run: deleteProject } = useRequest(deleteProjectConfig, {
+    manual: true,
+    onSuccess: () => {
+      message.success('提交成功');
+      navigate('/list/kb-list');
+    },
+    onError: () => {
+      message.error('提交失败，请重试');
+    },
+  });
+
   const { data, loading } = useRequest(() => {
-    return queryConfig({
-      configId: 'KAG_CONFIG',
-      version: '1',
+    return queryProjectConfig({
+      projectId: Number.parseInt(searchParams.get('projectId') || '0'),
     });
   });
 
@@ -48,7 +61,7 @@ const BasicForm: FC<Record<string, any>> = () => {
     }
   }, [data]);
   const onFinish = async (values: Record<string, any>) => {
-    const oriConfig: API.Config = JSON.parse(data?.config||"{}");
+    const oriConfig: API.Config = JSON.parse(data?.config || '{}');
     const config = {
       graph_store: {
         ...oriConfig?.graph_store,
@@ -72,21 +85,30 @@ const BasicForm: FC<Record<string, any>> = () => {
         biz_scene: values.prompt_biz_scene,
         language: values.prompt_language,
       },
-      llm_select:[{...oriConfig.llm_select}],
-      llm:{...oriConfig.llm}
+      llm_select: [{ ...oriConfig.llm_select }],
+      llm: { ...oriConfig.llm },
     };
     const body = {
+      id: data?.id,
       name: values.name,
       description: values.description,
       namespace: values.namespace,
-      config:JSON.stringify(config),
+      config: JSON.stringify(config),
     };
-    run(body);
+    updateProject(data?.id, body);
   };
-  return (loading || !graphStore || !vectorizer || !prompt) ? (
+
+  return loading || !graphStore || !vectorizer || !prompt ? (
     <ProSkeleton type={'descriptions'} />
   ) : (
-    <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
+    <PageContainer
+      content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。"
+      extra={
+        <Button type="primary" danger onClick={() => deleteProject(data?.id || 0)}>
+          删除项目
+        </Button>
+      }
+    >
       <Card variant={'outlined'}>
         <ProForm
           style={{
@@ -97,6 +119,9 @@ const BasicForm: FC<Record<string, any>> = () => {
           name="basic"
           layout="vertical"
           initialValues={{
+            name: data?.name,
+            namespace: data?.namespace,
+            description: data?.description,
             graph_store_source_type: 'default',
             graph_store_database: graphStore?.database,
             graph_store_password: graphStore?.password,
@@ -140,6 +165,7 @@ const BasicForm: FC<Record<string, any>> = () => {
               },
             ]}
             placeholder="请输入知识库英文名称"
+            disabled={true}
           />
           <ProFormTextArea
             label="知识库描述"
