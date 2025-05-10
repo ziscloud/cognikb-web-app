@@ -95,7 +95,7 @@ const BasicForm: FC<Record<string, any>> = () => {
       namespace: values.namespace,
       config: JSON.stringify(config),
     };
-    updateProject(data?.id, body);
+    updateProject(data?.id||0, body);
   };
 
   return loading || !graphStore || !vectorizer || !prompt ? (
