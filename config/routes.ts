@@ -157,6 +157,12 @@ export default [
         path: '/list/card-list',
         component: './list/card-list',
       },
+      {
+        name: 'kb-list',
+        icon: 'GoldOutlined',
+        path: '/list/kb-list',
+        component: './list/kb-list',
+      },
     ],
   },
   {
