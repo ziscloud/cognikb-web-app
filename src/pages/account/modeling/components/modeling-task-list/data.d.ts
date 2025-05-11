@@ -71,16 +71,61 @@ export type ModelingTaskItem = {
   action: string;
 }
 
+export type ModelingTaskExtension = {
+  dataSourceConfig: DataSourceConfig;
+  splitConfig: SplitConfig;
+  extractConfig: ExtractConfig;
+}
+
+interface DataSourceConfig {
+  columns: any[];
+  type: string;
+  fileName: string;
+  fileUrl: string;
+  ignoreHeader: boolean;
+  structure: boolean;
+}
+
+interface SplitConfig {
+  splitLength: number;
+  semanticSplit: boolean;
+}
+
+interface LLMConfig {
+  __customParamKeys: any[];
+  creator: string;
+  default: boolean;
+  createTime: string;
+  api_key: string;
+  stream: string;
+  base_url: string;
+  temperature: number;
+  model: string;
+  type: string;
+  llm_id: string;
+  desc: string;
+}
+
+interface ExtractConfig {
+  llm: LLMConfig;
+  llmPrompt: string;
+  autoSchema: boolean;
+  autoWrite: boolean;
+}
+
 export type TableListPagination = {
   total: number;
   pageSize: number;
   current: number;
 };
 
-export type TableListData = {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
-};
+export type TaskLog = {
+  id: number;
+  projectId: number;
+  resultMessage: TaskLogItem[];
+  resultNodes: TaskLogNodeItem[];
+  resultEdges: TaskLogEdgeItem[];
+}
 
 export type TableListParams = {
   status?: string;

@@ -1,7 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@umijs/max';
-import { ModelingTaskItem, TableListItem, TaskLogEdgeItem, TaskLogNodeItem } from './data';
+import { ModelingTaskItem, TableListItem, TaskLog, TaskLogEdgeItem, type TaskLogItem, TaskLogNodeItem } from './data';
 
 /** 获取规则列表 GET /api/rule */
 export async function rule(
@@ -45,13 +45,7 @@ export async function fetchTaskLog(
   options?: { [key: string]: any },
 ) {
   return request<{
-    result: {
-      id: number;
-      projectId: number;
-      resultMessage: string;
-      resultNodes: TaskLogNodeItem[];
-      resultEdges: TaskLogEdgeItem[];
-    };
+    result: TaskLog;
     /** 列表的内容总数 */
     remote?: string;
     success?: boolean;
