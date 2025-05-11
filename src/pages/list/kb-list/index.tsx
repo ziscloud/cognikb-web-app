@@ -72,7 +72,7 @@ const CardList = () => {
                     hoverable
                     className={styles.card}
                     actions={[
-                      <a key="option1">知识库构建</a>,
+                      <Link key="option1" to={`/account/modeling?projectId=${item.id}`}>知识库构建</Link>,
                       <a key="option2">知识问答</a>,
                       <Link key="option3" to={`/form/edit-kb-form?projectId=${item.id}`}>知识库配置</Link>,
                     ]}

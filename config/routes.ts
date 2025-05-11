@@ -200,6 +200,13 @@ export default [
         path: '/profile/advanced',
         component: './profile/advanced',
       },
+      {
+        name: 'modeling-task-detail',
+        icon: 'smile',
+        path: '/profile/modeling-task-detail',
+        component: './profile/modeling-task-detail',
+        hideInMenu: true,
+      },
     ],
   },
   {
@@ -274,6 +281,12 @@ export default [
         icon: 'smile',
         path: '/account/settings',
         component: './account/settings',
+      },
+      {
+        name: 'modeling',
+        icon: 'smile',
+        path: '/account/modeling',
+        component: './account/modeling',
       },
     ],
   },
