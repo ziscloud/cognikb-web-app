@@ -39,6 +39,7 @@ const SchemaGraph: React.FC<SchemaGraphProps> = (props) => {
           style: {
             type: 'circle',
             labelText: (d) => d.label,
+            fill: "#5CA5FF"
           },
         },
         edge: {
@@ -73,6 +74,7 @@ const SchemaGraph: React.FC<SchemaGraphProps> = (props) => {
           'drag-canvas',
           'zoom-canvas',
           'drag-element',
+          'hover-activate'
         ],
       });
       graph.addData({
