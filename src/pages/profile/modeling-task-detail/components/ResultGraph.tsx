@@ -100,7 +100,7 @@ const ResultGraph: React.FC<ResultGraphProps> = (props) => {
         let node = find(nodesFromSchema, (node) => node.name === entity.label);
         if (node) {
           edgesFromSchema.push({
-            id: 'edge-' + entity.id + '-' + node.id,
+            id: 'type-edge-' + entity.id + '-' + node.id,
             source:  node.id,
             target: entity.id,
             label: 'typeOf',
