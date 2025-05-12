@@ -9,6 +9,7 @@ import { useSearchParams } from '@@/exports';
 import { Graph } from '@antv/g6';
 import { useRequest } from '@umijs/max';
 import React, { useEffect, useRef } from 'react';
+import { uniqBy } from 'lodash';
 
 type SchemaGraphProps = {
   job?: ModelingTaskItem;
@@ -78,21 +79,21 @@ const SchemaGraph: React.FC<SchemaGraphProps> = (props) => {
         ],
       });
       graph.addData({
-        nodes: schema?.entityTypeDTOList?.map((entity: Entity) => {
+        nodes: uniqBy(schema?.entityTypeDTOList?.map((entity: Entity) => {
           return {
             id: 'node-' + entity.id,
             type: 'circle',
             label: entity.nameZh,
           };
-        }),
-        edges: schemaDif?.relationTypeDTOList?.map((relation: EntityRelation) => {
+        }), 'id'),
+        edges: uniqBy(schemaDif?.relationTypeDTOList?.map((relation: EntityRelation) => {
           return {
             id: 'edge-' +relation.startEntity.id + '-' + relation.endEntity.id,
             source: 'node-' +relation.startEntity.id,
             target: 'node-' +relation.endEntity.id,
             label: relation.nameZh,
           };
-        }),
+        }), 'id'),
       });
       graph.render();
     }
