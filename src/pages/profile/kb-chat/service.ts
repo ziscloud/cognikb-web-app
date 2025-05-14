@@ -28,6 +28,29 @@ export async function fetchConversations(
   });
 }
 
+export async function postNewConversation(
+  data: {
+    projectId: number;
+    name: string;
+    userId: number;
+  },
+  options?: { [key: string]: any },
+) {
+  return request<{
+    result: ConversationItem;
+    success?: boolean;
+    remote?: string;
+  }>('/api/public/v1/reasoner/session/create', {
+    data,
+    method: 'POST',
+    ...(options || {}),
+  }).then((res) => {
+    return {
+      data: res.result,
+    };
+  });
+}
+
 export async function fetchMessages(
   params: {
     // query

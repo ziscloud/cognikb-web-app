@@ -41,6 +41,7 @@ const ResultGraph: React.FC<ResultGraphProps> = (props) => {
         type: 'circle',
         style: {
           type: 'circle',
+          //@ts-ignore
           labelText: (d) => d.label,
         },
       },
@@ -52,6 +53,7 @@ const ResultGraph: React.FC<ResultGraphProps> = (props) => {
         style: {
           stroke: '#ccc',
           endArrow: true,
+          //@ts-ignore
           labelText: (d) => d.label,
         },
       },

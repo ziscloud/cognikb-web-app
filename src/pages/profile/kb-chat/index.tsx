@@ -1,7 +1,12 @@
 import MessageList from '@/pages/profile/kb-chat/components/MessageList';
 import SeededPrompts from '@/pages/profile/kb-chat/components/SeededPrompts';
 import ChatWelcome from '@/pages/profile/kb-chat/components/Welcom';
-import { fetchConversations, fetchMessages } from '@/pages/profile/kb-chat/service';
+import { ConversationItem, MessageContent } from '@/pages/profile/kb-chat/data';
+import {
+  fetchConversations,
+  fetchMessages,
+  postNewConversation,
+} from '@/pages/profile/kb-chat/service';
 import { useSearchParams } from '@@/exports';
 import {
   CloudUploadOutlined,
@@ -14,6 +19,7 @@ import {
 } from '@ant-design/icons';
 import { Attachments, Conversations, Sender, useXAgent, useXChat } from '@ant-design/x';
 import type { BubbleDataType } from '@ant-design/x/es/bubble/BubbleList';
+import { BubbleContentType } from '@ant-design/x/es/bubble/interface';
 import { Conversation } from '@ant-design/x/es/conversations';
 import { Avatar, Button, Divider, Flex, message, Switch, Tooltip, type GetProp } from 'antd';
 import dayjs from 'dayjs';
@@ -22,11 +28,11 @@ import { find } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import useStyles from './style.style';
 import './styles.css';
-import { MessageContent } from '@/pages/profile/kb-chat/data';
-import { BubbleContentType } from '@ant-design/x/es/bubble/interface';
 
 const KnowledgeBaseChat: React.FC = () => {
   const { styles } = useStyles();
+  const [messageApi, contextHolder] = message.useMessage();
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   const abortController = useRef<AbortController>(null);
@@ -66,7 +72,7 @@ const KnowledgeBaseChat: React.FC = () => {
     transformMessage: (info) => {
       console.log('transformMessage', info);
       const { originMessage, chunk } = info || {};
-      let currentText:MessageContent|BubbleContentType|undefined;
+      let currentText: MessageContent | BubbleContentType | undefined;
       try {
         if (chunk?.data && !chunk?.data.includes('DONE')) {
           currentText = deepParseJson(chunk?.data);
@@ -90,30 +96,64 @@ const KnowledgeBaseChat: React.FC = () => {
   });
 
   // ==================== Event ====================
-  const onSubmit = (val: string) => {
+  const onSubmit = async (val: string) => {
     if (!val) return;
 
     if (loading) {
       message.error('Request is in progress, please wait for the request to complete.');
       return;
     }
-
-    if (!curConversation) {
-      console.log('there is no selected conversation');
+    const projectId = Number.parseInt(searchParams.get('projectId') || '0');
+    if (projectId === 0) {
+      messageApi.open({
+        type: 'error',
+        content: 'there is no project selected',
+      });
       return;
     }
 
     let sessionId = find(conversations, { key: curConversation })?.id;
     if (!sessionId) {
-      console.log('this is a new conversation');
-      //TODO shunyun 2025/5/13: 1. call the api to create the conversation 2. refresh the conversation list
+      const res: { data: ConversationItem } = await postNewConversation({
+        projectId: projectId,
+        name: val,
+        //TODO shunyun 2025/5/14: get user id from the user profile
+        userId: 11111,
+      });
+      if (res.data) {
+        if (curConversation) {
+          setConversations((prevState) => {
+            return prevState.map((item) => {
+              if (item.key === curConversation) {
+                return { ...item, ...item.data, label: res.data.name };
+              } else {
+                return item;
+              }
+            });
+          });
+        } else {
+          setConversations([
+            ...conversations,
+            {
+              key: res.data.id,
+              ...res.data,
+              label: res.data.name
+            },
+          ]);
+          setCurConversation(res.data.id);
+        }
+        sessionId = res.data.id;
+      }
+    }
+
+    if (!sessionId) {
+      messageApi.open({
+        type: 'error',
+        content: 'there is no conversation selected',
+      });
       return;
     }
-    const projectId = Number.parseInt(searchParams.get('projectId') || '0');
-    if (projectId === 0) {
-      console.log('there is no project selected');
-      return;
-    }
+
     const now = dayjs().valueOf().toString();
     onRequest({
       stream: true,
@@ -135,7 +175,6 @@ const KnowledgeBaseChat: React.FC = () => {
   // ==================== Nodes ====================
   const chatSider = (
     <div className={styles.sider}>
-      {/* 🌟 添加会话 */}
       <Button
         onClick={() => {
           const now = dayjs().valueOf().toString();
@@ -158,7 +197,6 @@ const KnowledgeBaseChat: React.FC = () => {
         New Conversation
       </Button>
 
-      {/* 🌟 会话管理 */}
       <Conversations
         items={conversations}
         className={styles.conversations}
@@ -308,13 +346,12 @@ const KnowledgeBaseChat: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // history mock
     if (curConversation) {
       fetchMessages({ sessionId: curConversation, limit: 20, start: 0 }).then((res) => {
         const msgs: any[] = [];
         let items = deepParseJson(res.data);
         items.reverse();
-        items.forEach((item:any) => {
+        items.forEach((item: any) => {
           msgs.push({
             id: 'user-' + item.id,
             message: {
@@ -342,7 +379,7 @@ const KnowledgeBaseChat: React.FC = () => {
   // ==================== Render =================
   return (
     <div className={styles.layout}>
-      <Tooltip />
+      {contextHolder}
       {chatSider}
       <div className={styles.chat}>
         <div className={styles.chatList}>
