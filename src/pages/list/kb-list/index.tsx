@@ -2,15 +2,15 @@ import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { Link, useRequest } from '@umijs/max';
 import { Button, Card, List, Typography } from 'antd';
-import type { KnowledgeBaseListItemDataType } from './data.d';
-import { queryFakeList } from './service';
+import type { KnowledgeBaseItem } from './data.d';
+import { queryKnowledgeBaseList } from './service';
 import useStyles from './style.style';
 
 const { Paragraph } = Typography;
 const CardList = () => {
   const { styles } = useStyles();
   const { data, loading } = useRequest(() => {
-    return queryFakeList({
+    return queryKnowledgeBaseList({
       page: 1,
       size: 10,
     });
@@ -47,11 +47,11 @@ const CardList = () => {
       />
     </div>
   );
-  const nullData: Partial<KnowledgeBaseListItemDataType> = {};
+  const nullData: Partial<KnowledgeBaseItem> = {};
   return (
     <PageContainer content={pageHeaderContent} extraContent={pageHeaderExtraContent}>
       <div className={styles.cardList}>
-        <List<Partial<KnowledgeBaseListItemDataType>>
+        <List<Partial<KnowledgeBaseItem>>
           rowKey="id"
           loading={loading}
           grid={{

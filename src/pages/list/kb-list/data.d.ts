@@ -4,7 +4,7 @@ export type Member = {
   id: string;
 };
 
-export type KnowledgeBaseListItemDataType = {
+export type KnowledgeBaseItem = {
   id: string;
   name: string;
   description: string;
