@@ -207,6 +207,13 @@ export default [
         component: './profile/modeling-task-detail',
         hideInMenu: true,
       },
+      {
+        name: 'kb-chat',
+        icon: 'smile',
+        path: '/profile/kb-chat',
+        component: './profile/kb-chat',
+        hideInMenu: true,
+      },
     ],
   },
   {

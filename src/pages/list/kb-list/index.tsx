@@ -73,7 +73,7 @@ const CardList = () => {
                     className={styles.card}
                     actions={[
                       <Link key="option1" to={`/account/modeling?projectId=${item.id}`}>知识库构建</Link>,
-                      <a key="option2">知识问答</a>,
+                      <Link key="option2" to={`/profile/kb-chat?projectId=${item.id}`}>知识问答</Link>,
                       <Link key="option3" to={`/form/edit-kb-form?projectId=${item.id}`}>知识库配置</Link>,
                     ]}
                   >

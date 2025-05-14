@@ -6,14 +6,13 @@ import { ModelingTaskItem, TableListItem, TaskLog, TaskLogEdgeItem, type TaskLog
 /** 获取规则列表 GET /api/rule */
 export async function rule(
   params: {
-    // query
-    /** 当前的页码 */
-    start?: number;
-    /** 页面的容量 */
-    limit?: number;
-    projectId?: number;
+    start: number | undefined;
+    limit: number | undefined;
+    sort: Record<string, 'descend' | 'ascend' | null>;
+    filter: Record<string, (string | number)[] | null>;
+    projectId: number;
   },
-  options?: { [key: string]: any },
+  options?: { [p: string]: any },
 ) {
   return request<{
     result: {

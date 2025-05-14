@@ -9,6 +9,7 @@ import { useRequest, useSearchParams } from '@umijs/max';
 import { find, uniqBy } from 'lodash';
 import React, { useEffect, useRef } from 'react';
 import { getSchema } from '../service';
+import { EdgeData, NodeData } from '@antv/g6/src/spec/data';
 
 type ResultGraphProps = {
   job?: ModelingTaskItem;
@@ -81,7 +82,7 @@ const ResultGraph: React.FC<ResultGraphProps> = (props) => {
     const entityTypes = props?.subGraph?.resultNodes?.map((entity: TaskLogNodeItem) => {
       return entity.label;
     });
-    const nodesFromSchema = [];
+    const nodesFromSchema:NodeData[] = [];
     schema.entityTypeDTOList.forEach((entity: Entity) => {
       if (entityTypes?.includes(entity.name)) {
         nodesFromSchema.push({
@@ -94,7 +95,7 @@ const ResultGraph: React.FC<ResultGraphProps> = (props) => {
       }
     });
     console.log(nodesFromSchema);
-    const edgesFromSchema = [];
+    const edgesFromSchema:EdgeData[] = [];
     let nodes = props?.subGraph?.resultNodes?.map((entity: TaskLogNodeItem) => {
       if (nodesFromSchema.length > 0) {
         let node = find(nodesFromSchema, (node) => node.name === entity.label);
@@ -102,7 +103,7 @@ const ResultGraph: React.FC<ResultGraphProps> = (props) => {
           edgesFromSchema.push({
             id: 'type-edge-' + entity.id + '-' + node.id,
             source:  node.id,
-            target: entity.id,
+            target: entity.id?.toString(),
             label: 'typeOf',
             style: { stroke: '#5CACEE' },
           });
@@ -123,6 +124,7 @@ const ResultGraph: React.FC<ResultGraphProps> = (props) => {
       };
     });
     graph.addData({
+      //@ts-ignore
       nodes: [...nodes, ...nodesFromSchema],
       edges: [...edges, ...edgesFromSchema],
     });

@@ -117,6 +117,7 @@ const ModelingTaskList: React.FC = () => {
             fetchTaskLog({ id: record.taskId, jobId: record.id }).then((res) => {
               if (res.success) {
                 if (res.result.resultMessage) {
+                  //@ts-ignore
                   const taskLog: TaskLogItem[] = JSON.parse(res.result.resultMessage);
                   let sortedTaskLogItems = sortBy(taskLog, (item: TaskLogItem) => item.index);
                   setTaskLogs(sortedTaskLogItems);
@@ -166,10 +167,13 @@ const ModelingTaskList: React.FC = () => {
             </Button>
           </Link>,
         ]}
+
         request={async ({ pageSize, current }, sort, filter) => {
           const res = await rule({
             start: current,
             limit: pageSize,
+            sort,
+            filter,
             projectId: Number.parseInt(searchParams.get('projectId') || '0'),
           });
           return {
