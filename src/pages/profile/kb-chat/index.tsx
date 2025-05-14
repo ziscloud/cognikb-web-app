@@ -41,6 +41,7 @@ const KnowledgeBaseChat: React.FC = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [curConversation, setCurConversation] = useState<any>();
 
+  const [deepReasoning, setDeepReasoning] = useState(true);
   const [attachmentsOpen, setAttachmentsOpen] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState<GetProp<typeof Attachments, 'items'>>([]);
 
@@ -167,7 +168,7 @@ const KnowledgeBaseChat: React.FC = () => {
       prompt: [{ type: 'text', content: val }],
       session_id: sessionId,
       project_id: projectId,
-      thinking_enabled: true,
+      thinking_enabled: deepReasoning,
       search_enabled: false,
     });
   };
@@ -311,7 +312,7 @@ const KnowledgeBaseChat: React.FC = () => {
           return (
             <Flex justify="space-between" align="center">
               <Flex gap="small" align="center">
-                <Switch checkedChildren="Deep Thinking" unCheckedChildren="Deep Thinking" />
+                <Switch checkedChildren="Deep Thinking" unCheckedChildren="Deep Thinking" value={deepReasoning} onChange={setDeepReasoning} />
                 <Divider type="vertical" />
                 <Tooltip title="敬请期待">
                   <Button disabled={true} icon={<SearchOutlined />}>
