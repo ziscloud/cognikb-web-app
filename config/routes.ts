@@ -113,6 +113,13 @@ export default [
         component: './form/edit-kb-form',
         hideInMenu: true,
       },
+      {
+        name: 'edit-kb-form',
+        icon: 'gold',
+        path: '/form/create-kb-task-form',
+        component: './form/create-kb-task-form',
+        hideInMenu: true,
+      },
     ],
   },
   {

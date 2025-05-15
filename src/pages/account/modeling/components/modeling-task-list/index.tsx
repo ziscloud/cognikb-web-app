@@ -161,7 +161,7 @@ const ModelingTaskList: React.FC = () => {
           search: true,
         }}
         toolBarRender={() => [
-          <Link key="new_modeling_task" to={''}>
+          <Link key="new_modeling_task" to={`/form/create-kb-task-form?projectId=${searchParams.get('projectId')}`}>
             <Button type="primary" key="primary">
               <PlusOutlined /> 新建任务
             </Button>

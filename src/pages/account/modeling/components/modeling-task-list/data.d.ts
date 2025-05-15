@@ -91,7 +91,7 @@ interface SplitConfig {
   semanticSplit: boolean;
 }
 
-interface LLMConfig {
+interface LlmItem {
   __customParamKeys: any[];
   creator: string;
   default: boolean;
@@ -107,7 +107,7 @@ interface LLMConfig {
 }
 
 interface ExtractConfig {
-  llm: LLMConfig;
+  llm: LlmItem;
   llmPrompt: string;
   autoSchema: boolean;
   autoWrite: boolean;
