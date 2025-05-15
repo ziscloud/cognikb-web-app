@@ -155,14 +155,14 @@ const ModelingTaskList: React.FC = () => {
       <ProTable<ModelingTaskItem, TableListPagination>
         headerTitle="构建任务列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         search={false}
         options={{
           search: true,
         }}
         toolBarRender={() => [
           <Link key="new_modeling_task" to={`/form/create-kb-task-form?projectId=${searchParams.get('projectId')}`}>
-            <Button type="primary" key="primary">
+            <Button type="primary">
               <PlusOutlined /> 新建任务
             </Button>
           </Link>,

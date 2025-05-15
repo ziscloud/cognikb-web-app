@@ -41,3 +41,16 @@ export type CurrentUser = {
   address: string;
   phone: string;
 };
+
+export type DataItem = {
+  name: string;
+  docId: string;
+  score: number;
+  label: string;
+  fields : {
+    name: string;
+    id: string;
+    semanticType?: string;
+    desc?:string;
+  }
+}

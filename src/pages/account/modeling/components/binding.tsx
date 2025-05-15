@@ -1,45 +1,147 @@
-import { AlipayOutlined, DingdingOutlined, TaobaoOutlined } from '@ant-design/icons';
-import { List } from 'antd';
-import React, { Fragment } from 'react';
+import type {
+  ModelingTaskItem,
+  TableListPagination,
+} from '@/pages/account/modeling/components/modeling-task-list/data';
+import TypeSelect from '@/pages/account/modeling/components/TypeSelect';
+import { searchDatas } from '@/pages/account/modeling/service';
+import success from '@/pages/result/success';
+import { PlusOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
+import { useSearchParams } from '@umijs/max';
+import { Button } from 'antd';
+import React, { useRef, useState } from 'react';
 
 const BindingView: React.FC = () => {
-  const getData = () => [
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [total, setTotal] = useState(0);
+  const actionRef = useRef<ActionType>();
+
+  const columns: ProColumns<ModelingTaskItem>[] = [
     {
-      title: '绑定淘宝',
-      description: '当前未绑定淘宝账号',
-      actions: [<a key="Bind">绑定</a>],
-      avatar: <TaobaoOutlined className="taobao" />,
+      title: '类型',
+      dataIndex: 'label',
+      renderFormItem: (item, { type, defaultRender, ...rest }, form) => {
+        return <TypeSelect {...rest} />;
+      },
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
+      },
     },
     {
-      title: '绑定支付宝',
-      description: '当前未绑定支付宝账号',
-      actions: [<a key="Bind">绑定</a>],
-      avatar: <AlipayOutlined className="alipay" />,
+      title: '名称(name)',
+      dataIndex: 'fields.name',
+      ellipsis: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
+      },
+      render: (_, record) => {
+        return record.fields?.name;
+      },
     },
     {
-      title: '绑定钉钉',
-      description: '当前未绑定钉钉账号',
-      actions: [<a key="Bind">绑定</a>],
-      avatar: <DingdingOutlined className="dingding" />,
+      title: '实体主键(id)',
+      dataIndex: 'fields.id',
+      ellipsis: true,
+      hideInSearch: true,
+      render: (_, record) => {
+        return record.fields?.id;
+      },
+    },
+    {
+      title: 'semanticType(semanticType)',
+      dataIndex: 'fields.semanticType',
+      hideInSearch: true,
+      render: (_, record) => {
+        return record.fields?.semanticType;
+      },
+    },
+    {
+      title: 'desc(desc)',
+      dataIndex: 'fields.desc',
+      ellipsis: true,
+      hideInSearch: true,
+      render: (_, record) => {
+        return record.fields?.desc;
+      },
+    },
+    {
+      title: 'content(content)',
+      dataIndex: 'fields.content',
+      ellipsis: true,
+      hideInSearch: true,
+      render: (_, record) => {
+        return record.fields?.content;
+      },
     },
   ];
 
   return (
-    <Fragment>
-      <List
-        itemLayout="horizontal"
-        dataSource={getData()}
-        renderItem={(item) => (
-          <List.Item actions={item.actions}>
-            <List.Item.Meta
-              avatar={item.avatar}
-              title={item.title}
-              description={item.description}
-            />
-          </List.Item>
-        )}
-      />
-    </Fragment>
+    <ProTable<ModelingTaskItem, TableListPagination>
+      headerTitle="知识列表"
+      actionRef={actionRef}
+      rowKey="docId"
+      toolBarRender={() => [
+        <Button type="primary" key={'graph_view'} disabled={true}>
+          <PlusOutlined /> 画布探查
+        </Button>,
+      ]}
+      pagination={{
+        pageSize: 10,
+      }}
+      request={async ({ pageSize, current, ...search }, sort, filter) => {
+        console.log(sort, filter, search);
+        if (!hasNextPage && current >= total / pagesiz) {
+          return {
+            data: [],
+            success: success,
+            total: total,
+          };
+        }
+        const body = {
+          page: current,
+          size: pageSize,
+          sort,
+          filter,
+          matchExactOnly: false,
+          label: search.label || 'all',
+          queryStr: search['fields.name'],
+          projectId: Number.parseInt(searchParams.get('projectId') || '0'),
+        };
+        console.log(body.queryStr);
+        if (body.queryStr) {
+          const res = await searchDatas(body);
+          if (res.success && res.result.total < pageSize) {
+            setHasNextPage(false);
+          }
+
+          const result = {
+            data: res.result.results,
+            success: res.success,
+            total: total + +(hasNextPage ? res.result?.total + 1 : 0),
+          };
+
+          if (res.success && res.result.total) {
+            setTotal((prevState) => prevState + res.result.total);
+          }
+
+          return result;
+        }
+      }}
+      columns={columns}
+      rowSelection={false}
+    />
   );
 };
 

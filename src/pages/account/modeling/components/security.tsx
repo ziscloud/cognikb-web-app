@@ -1,62 +1,172 @@
-import { List } from 'antd';
-import React from 'react';
-
-type Unpacked<T> = T extends (infer U)[] ? U : T;
-
-const passwordStrength = {
-  strong: <span className="strong">强</span>,
-  medium: <span className="medium">中</span>,
-  weak: <span className="weak">弱 Weak</span>,
-};
+import { fetchSchemaScript, postSchemaScript } from '@/pages/account/modeling/service';
+import { Entity } from '@/pages/profile/modeling-task-detail/data';
+import { getSchema } from '@/pages/profile/modeling-task-detail/service';
+import { useSearchParams } from '@@/exports';
+import { ProCard } from '@ant-design/pro-components';
+import { Graph } from '@antv/g6';
+import { Editor } from '@monaco-editor/react';
+import { useRequest } from '@umijs/max';
+import { Button, message, Space } from 'antd';
+import { uniqBy } from 'lodash';
+import React, { useEffect, useRef, useState } from 'react';
 
 const SecurityView: React.FC = () => {
-  const getData = () => [
-    {
-      title: '账户密码',
-      description: (
-        <>
-          当前密码强度：
-          {passwordStrength.strong}
-        </>
-      ),
-      actions: [<a key="Modify">修改</a>],
-    },
-    {
-      title: '密保手机',
-      description: `已绑定手机：138****8293`,
-      actions: [<a key="Modify">修改</a>],
-    },
-    {
-      title: '密保问题',
-      description: '未设置密保问题，密保问题可有效保护账户安全',
-      actions: [<a key="Set">设置</a>],
-    },
-    {
-      title: '备用邮箱',
-      description: `已绑定邮箱：ant***sign.com`,
-      actions: [<a key="Modify">修改</a>],
-    },
-    {
-      title: 'MFA 设备',
-      description: '未绑定 MFA 设备，绑定后，可以进行二次确认',
-      actions: [<a key="bind">绑定</a>],
-    },
-  ];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [schemaScript, setSchemaScript] = useState<string>('');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { data: schema } = useRequest(() => {
+    return getSchema({ projectId: Number.parseInt(searchParams.get('projectId') || '0') });
+  });
+  const [messageApi, contextHolder] = message.useMessage();
 
-  const data = getData();
+  useEffect(() => {
+    if (schema) {
+      const graph = new Graph({
+        container: containerRef.current!,
+        autoFit: 'view',
+        node: {
+          type: 'circle',
+          style: {
+            type: 'circle',
+            //@ts-ignore
+            labelText: (d) => d.label,
+            fill: '#5CA5FF',
+          },
+        },
+        edge: {
+          type: 'cubic-horizontal',
+          animation: {
+            enter: false,
+          },
+          style: {
+            stroke: '#ccc',
+            endArrow: true,
+            //@ts-ignore
+            labelText: (d) => d.label,
+          },
+        },
+        layout: {
+          type: 'radial',
+          nodeSize: 32,
+          unitRadius: 200,
+          linkDistance: 500,
+          preventOverlap: true,
+          maxPreventOverlapIteration: 100,
+          strictRadial: false,
+        },
+        behaviors: [
+          {
+            type: 'click-select',
+            degree: 1,
+            state: 'active',
+            unselectedState: 'inactive',
+            multiple: true,
+            trigger: ['shift'],
+          },
+          'drag-canvas',
+          'zoom-canvas',
+          'drag-element',
+          'hover-activate',
+        ],
+      });
+      graph.addData({
+        nodes: uniqBy(
+          schema?.entityTypeDTOList?.map((entity: Entity) => {
+            return {
+              id: 'node-' + entity.id,
+              type: 'circle',
+              label: entity.nameZh,
+            };
+          }),
+          'id',
+        ),
+      });
+      graph.render();
+    }
+  }, [schema, isEditing]);
+
+  useEffect(() => {
+    fetchSchemaScript({ projectId: Number.parseInt(searchParams.get('projectId') || '0') }).then(
+      (res) => {
+        setSchemaScript(res.data);
+      },
+    );
+  }, []);
+
   return (
     <>
-      <List<Unpacked<typeof data>>
-        itemLayout="horizontal"
-        dataSource={data}
-        renderItem={(item) => (
-          <List.Item actions={item.actions}>
-            <List.Item.Meta title={item.title} description={item.description} />
-          </List.Item>
+      {contextHolder}
+      <ProCard
+        title="知识模型"
+        headerBordered
+        extra={
+          <>
+            {isEditing && (
+              <Space>
+                <Button
+                  onClick={() => {
+                    setIsEditing(false);
+                  }}
+                >
+                  取消
+                </Button>
+                <Button
+                  loading={isSaving}
+                  type={'primary'}
+                  onClick={async (event) => {
+                    setIsSaving(true);
+                    const res = await postSchemaScript({ data: schemaScript });
+                    setIsSaving(false);
+                    if (res.success) {
+                      setIsEditing(false);
+                      messageApi.success('保存成功');
+                    } else {
+                      messageApi.error('保存失败');
+                      event.preventDefault();
+                    }
+                  }}
+                >
+                  保存
+                </Button>
+              </Space>
+            )}
+            {!isEditing && (
+              <Button
+                size="small"
+                onClick={() => {
+                  setIsEditing(true);
+                }}
+              >
+                编辑Schema
+              </Button>
+            )}
+          </>
+        }
+      >
+        {!isEditing && (
+          <div
+            style={{ border: '1px solid #e8e8e8', backgroundColor: '#e8e8e8', height: '800px' }}
+            ref={containerRef}
+          />
         )}
-      />
+        {isEditing && (
+          <div>
+            <Editor
+              height="80vh"
+              defaultLanguage="yaml"
+              defaultValue={schemaScript}
+              onChange={(content) => {
+                setSchemaScript(content || '');
+              }}
+            />
+          </div>
+        )}
+      </ProCard>
     </>
   );
 };
 
-export default SecurityView;
+export default React.memo(SecurityView);

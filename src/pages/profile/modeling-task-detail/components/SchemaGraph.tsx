@@ -39,6 +39,7 @@ const SchemaGraph: React.FC<SchemaGraphProps> = (props) => {
           type: 'circle',
           style: {
             type: 'circle',
+            //@ts-ignore
             labelText: (d) => d.label,
             fill: "#5CA5FF"
           },
@@ -51,6 +52,7 @@ const SchemaGraph: React.FC<SchemaGraphProps> = (props) => {
           style: {
             stroke: '#ccc',
             endArrow: true,
+            //@ts-ignore
             labelText: (d) => d.label,
           },
         },

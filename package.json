@@ -46,6 +46,7 @@
     "@antv/l7": "^2.20.13",
     "@antv/l7-maps": "^2.20.13",
     "@antv/l7-react": "^2.4.3",
+    "@monaco-editor/react": "^4.7.0",
     "@re-dev/react-truncate": "^0.5.1",
     "@types/markdown-it": "^14.1.2",
     "@umijs/route-utils": "^2.2.2",
