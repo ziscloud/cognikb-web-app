@@ -60,4 +60,4 @@ We welcome contributions! Please read [CONTRIBUTING.md] and follow our code of c
 
 ## 📜 License
 
-MIT © [Cognik](https://github.com/CogniK)]
+MIT © [Cognik](https://github.com/CogniK)
