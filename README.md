@@ -1,13 +1,21 @@
-# Ant Design Pro
+# CogniK
 
-This project is initialized with [Ant Design Pro](https://pro.ant.design). Follow is the quick guide for how to use.
+**CogniK** is an AI-powered knowledge base system built on top of **KAG (Knowledge-Aware Graph)** technology. It transforms unstructured and structured data into actionable insights by linking knowledge, semantics, and reasoning with state-of-the-art artificial intelligence.
+
+## 🚀 Key Features
+
+- 🔍 **Semantic Search**: Retrieve knowledge using natural language queries powered by AI and vector similarity.
+- 🧠 **KAG Technology**: Leverages Knowledge-Aware Graphs to represent, infer, and enrich complex relationships between concepts.
+- 📚 **Multi-format Ingestion**: Supports documents, PDFs, web content, databases, and more.
+- 🧩 **Modular Architecture**: Easily integrate with your existing systems or extend with plugins.
+- 🛡️ **Access Control & Auditing**: Manage permissions and track interactions for enterprise use.
 
 ## Environment Prepare
 
 Install `node_modules`:
 
 ```bash
-npm install
+pnpm install
 ```
 
 or
@@ -16,42 +24,40 @@ or
 yarn
 ```
 
-## Provided Scripts
-
-Ant Design Pro provides some useful script to help you quick start and build with web project, code style check and test.
-
-Scripts provided in `package.json`. It's safe to modify or add additional script:
-
 ### Start project
 
 ```bash
-npm start
+pnpm run start
 ```
 
 ### Build project
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ### Check code style
 
 ```bash
-npm run lint
+pnpm run lint
 ```
 
 You can also use script to auto fix some lint error:
 
 ```bash
-npm run lint:fix
+pnpm run lint:fix
 ```
 
 ### Test code
 
 ```bash
-npm test
+pnpm test
 ```
 
-## More
+## 🤝 Contributing
 
-You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).
+We welcome contributions! Please read [CONTRIBUTING.md] and follow our code of conduct.
+
+## 📜 License
+
+MIT © [Cognik](https://github.com/CogniK)]
