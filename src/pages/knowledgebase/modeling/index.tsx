@@ -1,6 +1,6 @@
-import ModelingTaskList from '@/pages/account/modeling/components/modeling-task-list';
+import ModelingTaskList from '@/pages/knowledgebase/modeling/components/modeling-task-list';
 import { SmileOutlined } from '@ant-design/icons';
-import { ProCard } from '@ant-design/pro-components';
+import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { Result } from 'antd';
 import React, { useState } from 'react';
 import BindingView from './components/binding';
@@ -20,6 +20,7 @@ const Settings: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<string>('base');
 
   return (
+    <PageContainer>
     <ProCard
       tabs={{
         tabPosition: 'top',
@@ -49,6 +50,7 @@ const Settings: React.FC = () => {
       }}
       headerBordered
     />
+    </PageContainer>
   );
 };
 export default Settings;

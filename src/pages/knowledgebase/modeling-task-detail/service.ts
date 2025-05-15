@@ -1,8 +1,8 @@
 import { request } from '@umijs/max';
 import {
   ModelingTaskItem, TaskLogEdgeItem, TaskLogNodeItem,
-} from '@/pages/account/modeling/components/modeling-task-list/data';
-import { SchemaGraph, SplitPreviewResponse } from '@/pages/profile/modeling-task-detail/data';
+} from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
+import { SchemaGraph, SplitPreviewResponse } from '@/pages/knowledgebase/modeling-task-detail/data';
 
 export async function fetchTaskDetail(
   params: {

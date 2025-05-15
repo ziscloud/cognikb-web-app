@@ -1,6 +1,6 @@
 import { request } from '@umijs/max';
 import type { DataItem, GeographicItemType } from './data';
-import { ConversationItem } from '@/pages/profile/kb-chat/data';
+import { ConversationItem } from '@/pages/knowledgebase/kb-chat/data';
 
 export async function fetchSchemaScript(
   params: {

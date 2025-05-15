@@ -1,4 +1,4 @@
-import { LlmItem, TableListItem } from '@/pages/account/modeling/components/modeling-task-list/data';
+import { LlmItem, TableListItem } from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
 import { request } from '@umijs/max';
 
 

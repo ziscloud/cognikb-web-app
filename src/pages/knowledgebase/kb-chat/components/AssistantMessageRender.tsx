@@ -1,4 +1,4 @@
-import { MessageReferenceItem } from '@/pages/profile/kb-chat/data';
+import { MessageReferenceItem } from '@/pages/knowledgebase/kb-chat/data';
 import {
   CheckCircleFilled,
   CheckCircleOutlined,

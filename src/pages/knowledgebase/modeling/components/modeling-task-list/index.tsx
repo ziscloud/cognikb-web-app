@@ -1,4 +1,4 @@
-import useStyles from '@/pages/account/modeling/components/modeling-task-list/index.style';
+import useStyles from '@/pages/knowledgebase/modeling/components/modeling-task-list/index.style';
 import { useSearchParams } from '@@/exports';
 import {
   CheckCircleOutlined,
@@ -104,7 +104,7 @@ const ModelingTaskList: React.FC = () => {
       render: (_, record) => [
         <Link
           key="task_detail"
-          to={`/profile/modeling-task-detail?projectId=${searchParams.get('projectId')}&taskId=${record.id}`}
+          to={`/knowledgebase/kb-list/modeling/modeling-task-detail?projectId=${searchParams.get('projectId')}&taskId=${record.id}`}
         >
           详情
         </Link>,
@@ -161,7 +161,7 @@ const ModelingTaskList: React.FC = () => {
           search: true,
         }}
         toolBarRender={() => [
-          <Link key="new_modeling_task" to={`/form/create-kb-task-form?projectId=${searchParams.get('projectId')}`}>
+          <Link key="new_modeling_task" to={`/knowledgebase/kb-list/modeling/create-kb-task-form?projectId=${searchParams.get('projectId')}`}>
             <Button type="primary">
               <PlusOutlined /> 新建任务
             </Button>

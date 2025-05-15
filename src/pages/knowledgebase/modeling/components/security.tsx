@@ -1,6 +1,6 @@
-import { fetchSchemaScript, postSchemaScript } from '@/pages/account/modeling/service';
-import { Entity } from '@/pages/profile/modeling-task-detail/data';
-import { getSchema } from '@/pages/profile/modeling-task-detail/service';
+import { fetchSchemaScript, postSchemaScript } from '@/pages/knowledgebase/modeling/service';
+import { Entity } from '@/pages/knowledgebase/modeling-task-detail/data';
+import { getSchema } from '@/pages/knowledgebase/modeling-task-detail/service';
 import { useSearchParams } from '@@/exports';
 import { ProCard } from '@ant-design/pro-components';
 import { Graph } from '@antv/g6';

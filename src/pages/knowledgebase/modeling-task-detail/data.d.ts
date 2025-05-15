@@ -1,4 +1,4 @@
-import { getSchema } from '@/pages/profile/modeling-task-detail/service';
+import { getSchema } from '@/pages/knowledgebase/modeling-task-detail/service';
 
 export type SplitPreviewResponse = {
   success: boolean;

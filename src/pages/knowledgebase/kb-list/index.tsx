@@ -72,9 +72,9 @@ const CardList = () => {
                     hoverable
                     className={styles.card}
                     actions={[
-                      <Link key="option1" to={`/account/modeling?projectId=${item.id}`}>知识库构建</Link>,
-                      <Link key="option2" to={`/profile/kb-chat?projectId=${item.id}`}>知识问答</Link>,
-                      <Link key="option3" to={`/form/edit-kb-form?projectId=${item.id}`}>知识库配置</Link>,
+                      <Link key="option1" to={`/knowledgebase/kb-list/modeling?projectId=${item.id}`}>知识库构建</Link>,
+                      <Link key="option2" to={`/knowledgebase/kb-list/kb-chat?projectId=${item.id}`}>知识问答</Link>,
+                      <Link key="option3" to={`/knowledgebase/kb-list/edit-kb-form?projectId=${item.id}`}>知识库配置</Link>,
                     ]}
                   >
                     <Card.Meta
@@ -97,7 +97,7 @@ const CardList = () => {
             }
             return (
               <List.Item>
-                <Link to="/form/create-kb-form">
+                <Link to="/knowledgebase/kb-list/create-kb-form">
                   <Button type="dashed" className={styles.newButton}>
                     <PlusOutlined /> 新建知识库
                   </Button>

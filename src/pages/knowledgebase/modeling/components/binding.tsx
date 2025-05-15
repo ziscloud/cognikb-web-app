@@ -1,9 +1,9 @@
 import type {
   ModelingTaskItem,
   TableListPagination,
-} from '@/pages/account/modeling/components/modeling-task-list/data';
-import TypeSelect from '@/pages/account/modeling/components/TypeSelect';
-import { searchDatas } from '@/pages/account/modeling/service';
+} from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
+import TypeSelect from '@/pages/knowledgebase/modeling/components/TypeSelect';
+import { searchDatas } from '@/pages/knowledgebase/modeling/service';
 import success from '@/pages/result/success';
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';

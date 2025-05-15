@@ -50,7 +50,13 @@ export default [
     routes: [
       {
         path: '/dashboard',
-        redirect: '/dashboard/analysis',
+        redirect: '/dashboard/workplace',
+      },
+      {
+        name: 'workplace',
+        icon: 'smile',
+        path: '/dashboard/workplace',
+        component: './dashboard/workplace',
       },
       {
         name: 'analysis',
@@ -64,13 +70,66 @@ export default [
         path: '/dashboard/monitor',
         component: './dashboard/monitor',
       },
-      {
-        name: 'workplace',
-        icon: 'smile',
-        path: '/dashboard/workplace',
-        component: './dashboard/workplace',
-      },
     ],
+  },
+  {
+    path: '/knowledgebase',
+    icon: 'container',
+    name: 'knowledgebase',
+    routes: [
+      {
+        path: '/knowledgebase',
+        redirect: '/knowledgebase/kb-list',
+      },
+      {
+        name: 'kb-list',
+        icon: 'gold',
+        path: '/knowledgebase/kb-list',
+        component: './knowledgebase/kb-list',
+      },
+      {
+        name: 'create-kb-form',
+        icon: 'gold',
+        path: '/knowledgebase/kb-list/create-kb-form',
+        component: './knowledgebase/create-kb-form',
+        hideInMenu: true,
+      },
+      {
+        name: 'edit-kb-form',
+        icon: 'gold',
+        path: '/knowledgebase/kb-list/edit-kb-form',
+        component: './knowledgebase/edit-kb-form',
+        hideInMenu: true,
+      },
+      {
+        name: 'kb-chat',
+        icon: 'smile',
+        path: '/knowledgebase/kb-list/kb-chat',
+        component: './knowledgebase/kb-chat',
+        hideInMenu: true,
+      },
+      {
+        name: 'modeling',
+        icon: 'smile',
+        path: '/knowledgebase/kb-list/modeling',
+        component: './knowledgebase/modeling',
+        hideInMenu: true,
+      },
+      {
+        name: 'modeling-task-detail',
+        icon: 'smile',
+        path: '/knowledgebase/kb-list/modeling/modeling-task-detail',
+        component: './knowledgebase/modeling-task-detail',
+        hideInMenu: true,
+      },
+      {
+        name: 'edit-kb-form',
+        icon: 'gold',
+        path: '/knowledgebase/kb-list/modeling/create-kb-task-form',
+        component: './knowledgebase/create-kb-task-form',
+        hideInMenu: true,
+      },
+    ]
   },
   {
     path: '/form',
@@ -98,27 +157,6 @@ export default [
         icon: 'smile',
         path: '/form/advanced-form',
         component: './form/advanced-form',
-      },
-      {
-        name: 'create-kb-form',
-        icon: 'gold',
-        path: '/form/create-kb-form',
-        component: './form/create-kb-form',
-        hideInMenu: true,
-      },
-      {
-        name: 'edit-kb-form',
-        icon: 'gold',
-        path: '/form/edit-kb-form',
-        component: './form/edit-kb-form',
-        hideInMenu: true,
-      },
-      {
-        name: 'edit-kb-form',
-        icon: 'gold',
-        path: '/form/create-kb-task-form',
-        component: './form/create-kb-task-form',
-        hideInMenu: true,
       },
     ],
   },
@@ -178,12 +216,6 @@ export default [
         path: '/list/card-list',
         component: './list/card-list',
       },
-      {
-        name: 'kb-list',
-        icon: 'gold',
-        path: '/list/kb-list',
-        component: './list/kb-list',
-      },
     ],
   },
   {
@@ -206,20 +238,6 @@ export default [
         icon: 'smile',
         path: '/profile/advanced',
         component: './profile/advanced',
-      },
-      {
-        name: 'modeling-task-detail',
-        icon: 'smile',
-        path: '/profile/modeling-task-detail',
-        component: './profile/modeling-task-detail',
-        hideInMenu: true,
-      },
-      {
-        name: 'kb-chat',
-        icon: 'smile',
-        path: '/profile/kb-chat',
-        component: './profile/kb-chat',
-        hideInMenu: true,
       },
     ],
   },
@@ -296,17 +314,11 @@ export default [
         path: '/account/settings',
         component: './account/settings',
       },
-      {
-        name: 'modeling',
-        icon: 'smile',
-        path: '/account/modeling',
-        component: './account/modeling',
-      },
     ],
   },
   {
     path: '/',
-    redirect: '/dashboard/analysis',
+    redirect: '/dashboard/workplace',
   },
   {
     component: '404',

@@ -1,14 +1,14 @@
-import type { KnowledgeBaseItem } from '@/pages/list/kb-list/data';
-import { queryKnowledgeBaseList } from '@/pages/list/kb-list/service';
-import MessageList from '@/pages/profile/kb-chat/components/MessageList';
-import SeededPrompts from '@/pages/profile/kb-chat/components/SeededPrompts';
-import ChatWelcome from '@/pages/profile/kb-chat/components/Welcom';
-import { ConversationItem, MessageContent } from '@/pages/profile/kb-chat/data';
+import MessageList from '@/pages/knowledgebase/kb-chat/components/MessageList';
+import SeededPrompts from '@/pages/knowledgebase/kb-chat/components/SeededPrompts';
+import ChatWelcome from '@/pages/knowledgebase/kb-chat/components/Welcom';
+import { ConversationItem, MessageContent } from '@/pages/knowledgebase/kb-chat/data';
 import {
   fetchConversations,
   fetchMessages,
   postNewConversation,
-} from '@/pages/profile/kb-chat/service';
+} from '@/pages/knowledgebase/kb-chat/service';
+import type { KnowledgeBaseItem } from '@/pages/knowledgebase/kb-list/data';
+import { queryKnowledgeBaseList } from '@/pages/knowledgebase/kb-list/service';
 import { useSearchParams } from '@@/exports';
 import {
   CloudUploadOutlined,
@@ -18,6 +18,7 @@ import {
   PlusOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
+import { PageContainer } from '@ant-design/pro-components';
 import { Attachments, Conversations, Sender, useXAgent, useXChat } from '@ant-design/x';
 import type { BubbleDataType } from '@ant-design/x/es/bubble/BubbleList';
 import { BubbleContentType } from '@ant-design/x/es/bubble/interface';
@@ -50,10 +51,14 @@ const KnowledgeBaseChat: React.FC = () => {
 
   // ==================== State ====================
   const [knowledgeBaseList, setKnowledgeBaseList] = useState<KnowledgeBaseItem[]>([]);
-  const [curProjectId, setCurProjectId] = useState<number>(Number.parseInt(searchParams.get('projectId') || '0'));
+  const [curProjectId, setCurProjectId] = useState<number>(
+    Number.parseInt(searchParams.get('projectId') || '0'),
+  );
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [curConversation, setCurConversation] = useState<any>(Number.parseInt(searchParams.get('conversationId') || '0'));
+  const [curConversation, setCurConversation] = useState<any>(
+    Number.parseInt(searchParams.get('conversationId') || '0'),
+  );
 
   const [deepReasoning, setDeepReasoning] = useState(true);
   const [attachmentsOpen, setAttachmentsOpen] = useState(false);
@@ -203,12 +208,12 @@ const KnowledgeBaseChat: React.FC = () => {
       delete currentParams['projectId'];
     }
     if (curConversation) {
-      currentParams.conversationId= curConversation;
+      currentParams.conversationId = curConversation;
     } else {
       delete currentParams['conversationId'];
     }
     console.log('after delete', currentParams);
-    setSearchParams({ ...currentParams});
+    setSearchParams({ ...currentParams });
   }, [curProjectId, curConversation]);
 
   useEffect(() => {
@@ -272,186 +277,188 @@ const KnowledgeBaseChat: React.FC = () => {
   }, [curConversation]);
 
   return (
-    <div className={styles.layout}>
-      {contextHolder}
-      <div className={styles.sider}>
-        <div>
-          <Typography.Title level={4}>知识库</Typography.Title>
-        </div>
-        <Select
-          size={'large'}
-          style={{ marginBottom: '16px' }}
-          showSearch
-          value={curProjectId}
-          placeholder="Select a knowledge base"
-          filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-          }
-          options={knowledgeBaseList.map((item) => {
-            return { key: item.id, value: item.id, label: item.name };
-          })}
-          onChange={(val) => {
-            setCurProjectId(val);
-            setCurConversation('');
-          }}
-        />
-        <div>
-          <Typography.Title level={4}>会话</Typography.Title>
-        </div>
-        <Button
-          onClick={() => {
-            const now = dayjs().valueOf().toString();
-            setConversations([
-              {
-                key: now,
-                label: `New Conversation ${conversations.length + 1}`,
-                group: 'Today',
-              },
-              ...conversations,
-            ]);
-            //@ts-ignore
-            setCurConversation(now);
-            // setMessages([]);
-          }}
-          type="link"
-          className={styles.addBtn}
-          icon={<PlusOutlined />}
-        >
-          New Conversation
-        </Button>
-
-        <Conversations
-          items={conversations}
-          className={styles.conversations}
-          activeKey={curConversation}
-          onActiveChange={async (val) => {
-            abortController.current?.abort();
-            // The abort execution will trigger an asynchronous requestFallback, which may lead to timing issues.
-            // In future versions, the sessionId capability will be added to resolve this problem.
-            setTimeout(() => {
-              //@ts-ignore
-              setCurConversation(val);
-            }, 100);
-          }}
-          groupable
-          styles={{ item: { padding: '0 8px' } }}
-          menu={(conversation) => ({
-            items: [
-              {
-                label: 'Rename',
-                key: 'rename',
-                icon: <EditOutlined />,
-              },
-              {
-                label: 'Delete',
-                key: 'delete',
-                icon: <DeleteOutlined />,
-                danger: true,
-                onClick: () => {
-                  const newList = conversations.filter((item) => item.key !== conversation.key);
-                  const newKey = newList?.[0]?.key;
-                  setConversations(newList);
-                  // The delete operation modifies curConversation and triggers onActiveChange, so it needs to be executed with a delay to ensure it overrides correctly at the end.
-                  // This feature will be fixed in a future version.
-                  setTimeout(() => {
-                    if (conversation.key === curConversation) {
-                      //@ts-ignore
-                      setCurConversation(newKey);
-                    }
-                  }, 200);
-                },
-              },
-            ],
-          })}
-        />
-      </div>
-      <div className={styles.chat}>
-        <div className={styles.chatList}>
-          {messages?.length ? (
-            <MessageList messages={messages} />
-          ) : (
-            <ChatWelcome onSubmit={onSubmit} />
-          )}
-        </div>
-        <div style={{ padding: '0 40px' }}>
-          <SeededPrompts onSubmit={onSubmit} />
-          <Sender
-            value={inputValue}
-            header={
-              <Sender.Header
-                title="Upload File"
-                open={attachmentsOpen}
-                onOpenChange={setAttachmentsOpen}
-                styles={{ content: { padding: 0 } }}
-              >
-                <Attachments
-                  beforeUpload={() => false}
-                  items={attachedFiles}
-                  onChange={(info) => setAttachedFiles(info.fileList)}
-                  placeholder={(type) =>
-                    type === 'drop'
-                      ? { title: 'Drop file here' }
-                      : {
-                          icon: <CloudUploadOutlined />,
-                          title: 'Upload files',
-                          description: 'Click or drag files to this area to upload',
-                        }
-                  }
-                />
-              </Sender.Header>
+    <PageContainer>
+      <div className={styles.layout}>
+        {contextHolder}
+        <div className={styles.sider}>
+          <div>
+            <Typography.Title level={4}>知识库</Typography.Title>
+          </div>
+          <Select
+            size={'large'}
+            style={{ marginBottom: '16px' }}
+            showSearch
+            value={curProjectId}
+            placeholder="Select a knowledge base"
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
             }
-            onSubmit={() => {
-              onSubmit(inputValue);
-              setInputValue('');
-            }}
-            onChange={setInputValue}
-            onCancel={() => {
-              abortController.current?.abort();
-            }}
-            prefix={
-              <Button
-                type="text"
-                icon={<PaperClipOutlined style={{ fontSize: 18 }} />}
-                onClick={() => setAttachmentsOpen(!attachmentsOpen)}
-              />
-            }
-            loading={loading}
-            className={styles.sender}
-            allowSpeech
-            actions={(_, info) => {
-              const { SendButton, LoadingButton, SpeechButton } = info.components;
-              return (
-                <Flex gap={4}>
-                  <SpeechButton className={styles.speechButton} />
-                  {loading ? <LoadingButton type="default" /> : <SendButton type="primary" />}
-                </Flex>
-              );
-            }}
-            placeholder="Ask or input / use skills"
-            footer={({}) => {
-              return (
-                <Flex justify="space-between" align="center">
-                  <Flex gap="small" align="center">
-                    <Switch
-                      checkedChildren="深度推理"
-                      unCheckedChildren="深度推理"
-                      value={deepReasoning}
-                      onChange={setDeepReasoning}
-                    />
-                    <Divider type="vertical" />
-                    <Tooltip title="敬请期待">
-                      <Button disabled={true} icon={<SearchOutlined />}>
-                        Global Search
-                      </Button>
-                    </Tooltip>
-                  </Flex>
-                </Flex>
-              );
+            options={knowledgeBaseList.map((item) => {
+              return { key: item.id, value: item.id, label: item.name };
+            })}
+            onChange={(val) => {
+              setCurProjectId(val);
+              setCurConversation('');
             }}
           />
+          <div>
+            <Typography.Title level={4}>会话</Typography.Title>
+          </div>
+          <Button
+            onClick={() => {
+              const now = dayjs().valueOf().toString();
+              setConversations([
+                {
+                  key: now,
+                  label: `New Conversation ${conversations.length + 1}`,
+                  group: 'Today',
+                },
+                ...conversations,
+              ]);
+              //@ts-ignore
+              setCurConversation(now);
+              // setMessages([]);
+            }}
+            type="link"
+            className={styles.addBtn}
+            icon={<PlusOutlined />}
+          >
+            New Conversation
+          </Button>
+
+          <Conversations
+            items={conversations}
+            className={styles.conversations}
+            activeKey={curConversation}
+            onActiveChange={async (val) => {
+              abortController.current?.abort();
+              // The abort execution will trigger an asynchronous requestFallback, which may lead to timing issues.
+              // In future versions, the sessionId capability will be added to resolve this problem.
+              setTimeout(() => {
+                //@ts-ignore
+                setCurConversation(val);
+              }, 100);
+            }}
+            groupable
+            styles={{ item: { padding: '0 8px' } }}
+            menu={(conversation) => ({
+              items: [
+                {
+                  label: 'Rename',
+                  key: 'rename',
+                  icon: <EditOutlined />,
+                },
+                {
+                  label: 'Delete',
+                  key: 'delete',
+                  icon: <DeleteOutlined />,
+                  danger: true,
+                  onClick: () => {
+                    const newList = conversations.filter((item) => item.key !== conversation.key);
+                    const newKey = newList?.[0]?.key;
+                    setConversations(newList);
+                    // The delete operation modifies curConversation and triggers onActiveChange, so it needs to be executed with a delay to ensure it overrides correctly at the end.
+                    // This feature will be fixed in a future version.
+                    setTimeout(() => {
+                      if (conversation.key === curConversation) {
+                        //@ts-ignore
+                        setCurConversation(newKey);
+                      }
+                    }, 200);
+                  },
+                },
+              ],
+            })}
+          />
+        </div>
+        <div className={styles.chat}>
+          <div className={styles.chatList}>
+            {messages?.length ? (
+              <MessageList messages={messages} />
+            ) : (
+              <ChatWelcome onSubmit={onSubmit} />
+            )}
+          </div>
+          <div style={{ padding: '0 40px' }}>
+            <SeededPrompts onSubmit={onSubmit} />
+            <Sender
+              value={inputValue}
+              header={
+                <Sender.Header
+                  title="Upload File"
+                  open={attachmentsOpen}
+                  onOpenChange={setAttachmentsOpen}
+                  styles={{ content: { padding: 0 } }}
+                >
+                  <Attachments
+                    beforeUpload={() => false}
+                    items={attachedFiles}
+                    onChange={(info) => setAttachedFiles(info.fileList)}
+                    placeholder={(type) =>
+                      type === 'drop'
+                        ? { title: 'Drop file here' }
+                        : {
+                            icon: <CloudUploadOutlined />,
+                            title: 'Upload files',
+                            description: 'Click or drag files to this area to upload',
+                          }
+                    }
+                  />
+                </Sender.Header>
+              }
+              onSubmit={() => {
+                onSubmit(inputValue);
+                setInputValue('');
+              }}
+              onChange={setInputValue}
+              onCancel={() => {
+                abortController.current?.abort();
+              }}
+              prefix={
+                <Button
+                  type="text"
+                  icon={<PaperClipOutlined style={{ fontSize: 18 }} />}
+                  onClick={() => setAttachmentsOpen(!attachmentsOpen)}
+                />
+              }
+              loading={loading}
+              className={styles.sender}
+              allowSpeech
+              actions={(_, info) => {
+                const { SendButton, LoadingButton, SpeechButton } = info.components;
+                return (
+                  <Flex gap={4}>
+                    <SpeechButton className={styles.speechButton} />
+                    {loading ? <LoadingButton type="default" /> : <SendButton type="primary" />}
+                  </Flex>
+                );
+              }}
+              placeholder="Ask or input / use skills"
+              footer={({}) => {
+                return (
+                  <Flex justify="space-between" align="center">
+                    <Flex gap="small" align="center">
+                      <Switch
+                        checkedChildren="深度推理"
+                        unCheckedChildren="深度推理"
+                        value={deepReasoning}
+                        onChange={setDeepReasoning}
+                      />
+                      <Divider type="vertical" />
+                      <Tooltip title="敬请期待">
+                        <Button disabled={true} icon={<SearchOutlined />}>
+                          Global Search
+                        </Button>
+                      </Tooltip>
+                    </Flex>
+                  </Flex>
+                );
+              }}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

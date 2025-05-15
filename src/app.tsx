@@ -1,4 +1,4 @@
-import { AvatarDropdown, AvatarName, Footer, Question, SelectLang } from '@/components';
+import { AvatarDropdown, AvatarName, Question, SelectLang } from '@/components';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -7,6 +7,7 @@ import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -97,6 +98,20 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         ]
       : [],
     menuHeaderRender: undefined,
+    itemRender: (route, _, routes) => {
+      const { location } = history;
+      const searchParams = location.search;
+      const { breadcrumbName, title, path } = route;
+      const label = title || breadcrumbName;
+      const last = routes[routes.length - 1];
+      if (last) {
+        //@ts-ignore
+        if (last.path === path || last.linkPath === path) {
+          return <span>{label}</span>;
+        }
+      }
+      return <Link to={`${path}${searchParams}`}>{label}</Link>;
+    },
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态

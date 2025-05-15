@@ -1,5 +1,5 @@
-import { LlmItem } from '@/pages/account/modeling/components/modeling-task-list/data';
-import { getLlmSelect, postKnowledgeBuildingJob } from '@/pages/form/create-kb-task-form/service';
+import { LlmItem } from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
+import { getLlmSelect, postKnowledgeBuildingJob } from '@/pages/knowledgebase/create-kb-task-form/service';
 import { useSearchParams } from '@@/exports';
 import {
   PageContainer,

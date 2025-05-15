@@ -4,9 +4,9 @@ import {
   TaskLogEdgeItem,
   TaskLogNodeItem,
   type TaskLogItem,
-} from '@/pages/account/modeling/components/modeling-task-list/data';
-import { fetchTaskLog } from '@/pages/account/modeling/components/modeling-task-list/service';
-import SchemaGraph from '@/pages/profile/modeling-task-detail/components/SchemaGraph';
+} from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
+import { fetchTaskLog } from '@/pages/knowledgebase/modeling/components/modeling-task-list/service';
+import SchemaGraph from '@/pages/knowledgebase/modeling-task-detail/components/SchemaGraph';
 import { useSearchParams } from '@@/exports';
 import {
   CheckCircleOutlined,
@@ -23,7 +23,7 @@ import { sortBy } from 'lodash';
 import { FC, useEffect, useState } from 'react';
 import { fetchTaskDetail, getSplitPreview } from './service';
 import useStyles from './style.style';
-import ResultGraph from '@/pages/profile/modeling-task-detail/components/ResultGraph';
+import ResultGraph from '@/pages/knowledgebase/modeling-task-detail/components/ResultGraph';
 
 type AdvancedState = {
   operationKey: 'tab1' | 'tab2' | 'tab3';

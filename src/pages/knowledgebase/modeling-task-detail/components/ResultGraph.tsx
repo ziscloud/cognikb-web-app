@@ -2,8 +2,8 @@ import {
   ModelingTaskItem,
   TaskLogEdgeItem,
   TaskLogNodeItem,
-} from '@/pages/account/modeling/components/modeling-task-list/data';
-import { Entity } from '@/pages/profile/modeling-task-detail/data';
+} from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
+import { Entity } from '@/pages/knowledgebase/modeling-task-detail/data';
 import { Graph } from '@antv/g6';
 import { useRequest, useSearchParams } from '@umijs/max';
 import { find, uniqBy } from 'lodash';

@@ -1,4 +1,4 @@
-import { getSchema } from '@/pages/profile/modeling-task-detail/service';
+import { getSchema } from '@/pages/knowledgebase/modeling-task-detail/service';
 import { useRequest, useSearchParams } from '@@/exports';
 import { Select } from 'antd';
 import { useEffect, useState } from 'react';

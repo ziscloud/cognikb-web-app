@@ -33,7 +33,7 @@ const BasicForm: FC<Record<string, any>> = () => {
     manual: true,
     onSuccess: () => {
       message.success('提交成功');
-      navigate('/list/kb-list');
+      navigate('/knowledgebase/kb-list');
     },
     onError: () => {
       message.error('提交失败，请重试');

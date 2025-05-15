@@ -2,9 +2,9 @@ import {
   ModelingTaskItem,
   TaskLogEdgeItem,
   TaskLogNodeItem,
-} from '@/pages/account/modeling/components/modeling-task-list/data';
-import { Entity, EntityRelation } from '@/pages/profile/modeling-task-detail/data';
-import { getSchema, getSchemaDiff } from '@/pages/profile/modeling-task-detail/service';
+} from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
+import { Entity, EntityRelation } from '@/pages/knowledgebase/modeling-task-detail/data';
+import { getSchema, getSchemaDiff } from '@/pages/knowledgebase/modeling-task-detail/service';
 import { useSearchParams } from '@@/exports';
 import { Graph } from '@antv/g6';
 import { useRequest } from '@umijs/max';

@@ -1,5 +1,5 @@
-import AssistantMessageRender from '@/pages/profile/kb-chat/components/AssistantMessageRender';
-import useStyles from '@/pages/profile/kb-chat/style.style';
+import AssistantMessageRender from '@/pages/knowledgebase/kb-chat/components/AssistantMessageRender';
+import useStyles from '@/pages/knowledgebase/kb-chat/style.style';
 import { CopyOutlined, DislikeOutlined, LikeOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Bubble } from '@ant-design/x';
 import { BubbleDataType } from '@ant-design/x/es/bubble/BubbleList';
