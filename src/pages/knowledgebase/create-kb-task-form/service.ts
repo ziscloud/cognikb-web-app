@@ -1,6 +1,5 @@
-import { LlmItem, TableListItem } from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
+import { LlmItem } from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
 import { request } from '@umijs/max';
-
 
 export async function postKnowledgeBuildingJob(data: any, options?: { [key: string]: any }) {
   return request<{
@@ -8,6 +7,9 @@ export async function postKnowledgeBuildingJob(data: any, options?: { [key: stri
     /** 列表的内容总数 */
     remote?: string;
     success?: boolean;
+    errorCode?: string;
+    errorMessage?: string;
+    traceId?: string;
   }>('/api/public/v1/builder/job/submit', {
     data,
     method: 'POST',

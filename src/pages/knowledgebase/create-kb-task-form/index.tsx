@@ -1,5 +1,8 @@
+import {
+  getLlmSelect,
+  postKnowledgeBuildingJob,
+} from '@/pages/knowledgebase/create-kb-task-form/service';
 import { LlmItem } from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
-import { getLlmSelect, postKnowledgeBuildingJob } from '@/pages/knowledgebase/create-kb-task-form/service';
 import { useSearchParams } from '@@/exports';
 import {
   PageContainer,
@@ -12,7 +15,7 @@ import {
   ProFormUploadButton,
   StepsForm,
 } from '@ant-design/pro-components';
-import { Button, Card, FormInstance, Typography } from 'antd';
+import { Button, Card, FormInstance, message, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { StepDataType } from './data.d';
 import useStyles from './style.style';
@@ -22,6 +25,8 @@ const StepForm: React.FC<Record<string, any>> = () => {
   const { styles } = useStyles();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
+  const [messageApi, contextHolder] = message.useMessage();
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [stepData, setStepData] = useState<StepDataType>({
     dataSourceConfig_structure: 'unstructuredContent',
@@ -35,6 +40,7 @@ const StepForm: React.FC<Record<string, any>> = () => {
 
   return (
     <PageContainer content="将一个冗长或用户不熟悉的表单任务分成多个步骤，指导用户完成。">
+      {contextHolder}
       <Card variant={'outlined'}>
         <StepsForm
           formRef={formRef}
@@ -91,11 +97,21 @@ const StepForm: React.FC<Record<string, any>> = () => {
                 },
               }),
             };
-            const rest = await postKnowledgeBuildingJob(body);
-            if (rest.success) {
+            const response = await postKnowledgeBuildingJob(body);
+            if (response.success) {
               formRef.current?.resetFields();
+              messageApi.success('创建成功');
+            } else {
+              messageApi.error(
+                <div style={{ maxWidth: '300px' }}>
+                  <Typography.Title level={3}>{response.errorCode}</Typography.Title>
+                  <Typography.Paragraph copyable={true} ellipsis={{ rows: 5 }}>
+                    {response.errorMessage}
+                  </Typography.Paragraph>
+                </div>,
+              );
             }
-            return rest.success;
+            return response.success;
           }}
         >
           <StepsForm.StepForm<StepDataType>
