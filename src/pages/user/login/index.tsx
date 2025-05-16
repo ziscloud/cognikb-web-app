@@ -2,11 +2,11 @@ import { Footer } from '@/components';
 import { login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import {
-  AlipayCircleOutlined,
   LockOutlined,
-  MobileOutlined,
-  TaobaoCircleOutlined,
+  MobileOutlined, QrcodeOutlined,
   UserOutlined,
+  WechatOutlined,
+  WechatWorkOutlined,
   WeiboCircleOutlined,
 } from '@ant-design/icons';
 import {
@@ -18,6 +18,7 @@ import {
 import { FormattedMessage, Helmet, SelectLang, useIntl, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
 import { createStyles } from 'antd-style';
+import crypto from 'crypto-js';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
@@ -63,9 +64,15 @@ const ActionIcons = () => {
 
   return (
     <>
-      <AlipayCircleOutlined key="AlipayCircleOutlined" className={styles.action} />
-      <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={styles.action} />
-      <WeiboCircleOutlined key="WeiboCircleOutlined" className={styles.action} />
+      <WechatOutlined key="AlipayCircleOutlined" className={styles.action} onClick={()=>{
+        message.info('敬请期待');
+      }} />
+      <WechatWorkOutlined key="TaobaoCircleOutlined" className={styles.action} onClick={()=>{
+        message.info('敬请期待');
+      }}/>
+      <QrcodeOutlined key="WeiboCircleOutlined" className={styles.action} onClick={()=>{
+        message.info('敬请期待');
+      }}/>
     </>
   );
 };
@@ -114,11 +121,15 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (values: API.LoginParams) => {
+  const handleSubmit = async ({ password, ...rest }: API.LoginParams) => {
     try {
       // 登录
-      const msg = await login({ ...values, type });
-      if (msg.status === 'ok') {
+      const msg = await login({
+        password: crypto.SHA256(password + 'OPENSPG').toString(crypto.enc.Hex),
+        ...rest,
+        type,
+      });
+      if (msg.success) {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: '登录成功！',
@@ -167,7 +178,7 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
           logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
+          title="CogniK"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
             autoLogin: true,
@@ -210,21 +221,21 @@ const Login: React.FC = () => {
             <LoginMessage
               content={intl.formatMessage({
                 id: 'pages.login.accountLogin.errorMessage',
-                defaultMessage: '账户或密码错误(admin/ant.design)',
+                defaultMessage: '账户或密码错误',
               })}
             />
           )}
           {type === 'account' && (
             <>
               <ProFormText
-                name="username"
+                name="account"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined />,
                 }}
                 placeholder={intl.formatMessage({
                   id: 'pages.login.username.placeholder',
-                  defaultMessage: '用户名: admin or user',
+                  defaultMessage: '用户名',
                 })}
                 rules={[
                   {
@@ -246,7 +257,7 @@ const Login: React.FC = () => {
                 }}
                 placeholder={intl.formatMessage({
                   id: 'pages.login.password.placeholder',
-                  defaultMessage: '密码: ant.design',
+                  defaultMessage: '密码',
                 })}
                 rules={[
                   {

@@ -3,9 +3,15 @@
 
 declare namespace API {
   type CurrentUser = {
-    name?: string;
+    id: string;
+    account: string;
+    realName: string;
+    nickName: string;
+    workNo: string;
+    userCurrentLanguage: string;
+    gmtCreate: string;
+    gmtModified: string;
     avatar?: string;
-    userid?: string;
     email?: string;
     signature?: string;
     title?: string;
@@ -24,6 +30,8 @@ declare namespace API {
   };
 
   type LoginResult = {
+    success?:  boolean;
+    remote?: string;
     status?: string;
     type?: string;
     currentAuthority?: string;

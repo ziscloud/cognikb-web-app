@@ -150,6 +150,7 @@ export default defineConfig({
     },
   ],
   mock: {
+    exclude: ['mock/user.ts'],
     include: ['mock/**/*', 'src/pages/**/_mock.ts'],
   },
   mfsu: {
