@@ -1,13 +1,9 @@
 import { getSchema } from '@/pages/knowledgebase/modeling-task-detail/service';
 import { useRequest, useSearchParams } from '@@/exports';
-import { Select } from 'antd';
+import { ProFormSelect, ProFormSelectProps } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
 
-const TypeSelect: React.FC<{
-  /** Value 和 onChange 会被自动注入 */
-  value?: string;
-  onChange?: (value: string) => void;
-}> = (props) => {
+const TypeSelect: React.FC<ProFormSelectProps> = (props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: schema } = useRequest(() => {
@@ -29,12 +25,12 @@ const TypeSelect: React.FC<{
         };
       });
       if (options) {
-        setOptions([{label: '全部', value: 'all'},...options]);
+        setOptions([{ label: '全部', value: 'all' }, ...options]);
       }
     }
   }, [schema]);
 
-  return <Select options={innerOptions} value={props.value} defaultValue={'all'} onChange={props.onChange} />;
+  return <ProFormSelect {...props} options={innerOptions} />;
 };
 
-export  default TypeSelect;
+export default TypeSelect;

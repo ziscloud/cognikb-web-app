@@ -52,5 +52,6 @@ export type DataItem = {
     id: string;
     semanticType?: string;
     desc?:string;
+    content?:string;
   }
 }

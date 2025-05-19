@@ -32,11 +32,11 @@ export async function searchDatas(
   params: {
     projectId: number;
     queryStr?: string;
-    label: string;
+    label?: string;
     page: number;
     size: number;
-    sort: Record<string, 'descend' | 'ascend' | null>;
-    filter: Record<string, (string | number)[] | null>;
+    //sort: Record<string, 'descend' | 'ascend' | null>;
+    //filter: Record<string, (string | number)[] | null>;
     matchExactOnly: boolean;
   },
   options?: { [key: string]: any },
