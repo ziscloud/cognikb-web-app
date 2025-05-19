@@ -60,7 +60,7 @@ const useStyles = createStyles(({ token, css }) => {
     // chat list 样式
     chat: css`
       height: 100%;
-      width: 100%;
+      width: calc(100% - 280px);
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -81,7 +81,7 @@ const useStyles = createStyles(({ token, css }) => {
     `,
     chatList: css`
       flex: 1;
-      overflow: auto;
+      overflow: hidden;
     `,
     loadingMessage: css`
       background-image: linear-gradient(90deg, #ff6b23 0%, #af3cb8 31%, #53b6ff 89%);

@@ -30,7 +30,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
           return <div dangerouslySetInnerHTML={{ __html: content }}></div>;
         },
       }))}
-      style={{ height: '100%', paddingInline: '40px' }}
+      style={{ height: '100%', marginLeft: '40px', marginRight: '40px' }}
       roles={{
         assistant: {
           placement: 'start',
