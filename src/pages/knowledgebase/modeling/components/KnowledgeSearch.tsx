@@ -13,7 +13,7 @@ import { useSearchParams } from '@umijs/max';
 import { Button, Dropdown, Flex, Select, Space, Table, TableProps, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 
-const BindingView: React.FC = () => {
+const KnowledgeSearchView: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   const [current, setCurrent] = useState(1);
@@ -222,4 +222,4 @@ const BindingView: React.FC = () => {
   );
 };
 
-export default BindingView;
+export default KnowledgeSearchView;

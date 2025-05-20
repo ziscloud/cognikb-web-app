@@ -3,21 +3,21 @@ import { SmileOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { Result } from 'antd';
 import React, { useState } from 'react';
-import BindingView from './components/binding';
-import SecurityView from './components/security';
+import KnowledgeSearchView from './components/KnowledgeSearch';
+import KnowledgeModelView from './components/KnowledgeModel';
 import useStyles from './style.style';
 
 const Settings: React.FC = () => {
   const { styles } = useStyles();
   const menuMap: Record<string, React.ReactNode> = {
-    base: '构建任务',
-    security: '知识模型',
-    notification: '概念模型',
-    notification1: '规则管理',
-    binding: '知识探查',
+    ModelingTask: '构建任务',
+    KnowledgeModel: '知识模型',
+    ConceptModel: '概念模型',
+    RuleList: '规则管理',
+    KnowledgeSearch: '知识探查',
   };
 
-  const [selectedTab, setSelectedTab] = useState<string>('base');
+  const [selectedTab, setSelectedTab] = useState<string>('ModelingTask');
 
   return (
     <PageContainer>
@@ -29,21 +29,21 @@ const Settings: React.FC = () => {
           setSelectedTab(key);
         },
         items: [
-          { key: 'base', label: menuMap['base'], children: <ModelingTaskList /> },
-          { key: 'security', label: menuMap['security'], children: <SecurityView /> },
-          { key: 'binding', label: menuMap['binding'], children: <BindingView /> },
+          { key: 'ModelingTask', label: menuMap['ModelingTask'], children: <ModelingTaskList /> },
+          { key: 'KnowledgeModel', label: menuMap['KnowledgeModel'], children: <KnowledgeModelView /> },
+          { key: 'KnowledgeSearch', label: menuMap['KnowledgeSearch'], children: <KnowledgeSearchView /> },
           {
-            key: 'notification',
-            label: menuMap['notification'],
+            key: 'ConceptModel',
+            label: menuMap['ConceptModel'],
             children: (
-              <Result icon={<SmileOutlined />} title={menuMap['notification'] + ', 敬请期待'} />
+              <Result icon={<SmileOutlined />} title={menuMap['ConceptModel'] + ', 敬请期待'} />
             ),
           },
           {
-            key: 'notification1',
-            label: menuMap['notification1'],
+            key: 'RuleList',
+            label: menuMap['RuleList'],
             children: (
-              <Result icon={<SmileOutlined />} title={menuMap['notification1'] + ', 敬请期待'} />
+              <Result icon={<SmileOutlined />} title={menuMap['RuleList'] + ', 敬请期待'} />
             ),
           },
         ],

@@ -10,7 +10,7 @@ import { Button, message, Space } from 'antd';
 import { uniqBy } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 
-const SecurityView: React.FC = () => {
+const KnowledgeModelView: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -169,4 +169,4 @@ const SecurityView: React.FC = () => {
   );
 };
 
-export default React.memo(SecurityView);
+export default React.memo(KnowledgeModelView);
