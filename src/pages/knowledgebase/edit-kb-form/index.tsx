@@ -19,13 +19,16 @@ const BasicForm: FC<Record<string, any>> = () => {
   const [vectorizer, setVectorizer] = useState<API.VectorizerConfig>();
   const [prompt, setPrompt] = useState<API.PromptConfig>();
   const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
   const { run: updateProject } = useRequest(updateProjectConfig, {
     manual: true,
     onSuccess: () => {
       message.success('提交成功');
+      setSubmitting(false);
     },
     onError: () => {
       message.error('提交失败，请重试');
+      setSubmitting(false);
     },
   });
 
@@ -95,6 +98,7 @@ const BasicForm: FC<Record<string, any>> = () => {
       namespace: values.namespace,
       config: JSON.stringify(config),
     };
+    setSubmitting(true);
     updateProject(data?.id||0, body);
   };
 
@@ -111,6 +115,7 @@ const BasicForm: FC<Record<string, any>> = () => {
     >
       <Card variant={'outlined'}>
         <ProForm
+          loading={submitting}
           style={{
             margin: 'auto',
             marginTop: 8,

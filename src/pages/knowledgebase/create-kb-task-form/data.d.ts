@@ -3,6 +3,9 @@ export interface StepDataType {
   type: string;
   splitConfig_splitLength: number;
   receiverMode: string;
+  jobName: string;
+  splitConfig_semanticSplit?: number
+  fileUrl?:any
 }
 
 export type CurrentTypes = 'base' | 'confirm' | 'result';

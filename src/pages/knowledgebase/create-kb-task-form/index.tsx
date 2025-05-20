@@ -15,10 +15,15 @@ import {
   ProFormUploadButton,
   StepsForm,
 } from '@ant-design/pro-components';
-import { Button, Card, FormInstance, message, Typography } from 'antd';
+import { ShowMore } from '@re-dev/react-truncate';
+import { Button, Card, Collapse, Flex, FormInstance, List, message, theme, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { StepDataType } from './data.d';
 import useStyles from './style.style';
+import { getSplitPreview } from '@/pages/knowledgebase/modeling-task-detail/service';
+import { CaretRightOutlined } from '@ant-design/icons';
+
+
 
 const StepForm: React.FC<Record<string, any>> = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -26,17 +31,28 @@ const StepForm: React.FC<Record<string, any>> = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   const [messageApi, contextHolder] = message.useMessage();
-
+  const [splitPreviews, setSplitPreviews] = useState<{id: number, content: string}[]>([]);
+  const [splitPreviewLoading, setSplitPreviewLoading ] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [stepData, setStepData] = useState<StepDataType>({
     dataSourceConfig_structure: 'unstructuredContent',
     type: 'FILE_EXTRACT',
     splitConfig_splitLength: 2000,
     receiverMode: 'alipay',
+    jobName: '',
   });
   const [current, setCurrent] = useState(0);
   const [llmOptions, setLlmOptions] = useState<LlmItem[]>([]);
   const formRef = useRef<FormInstance>();
+  const {
+    token: {colorBgContainer, colorFillAlter, borderRadiusLG},
+  } = theme.useToken();
+
+  const panelStyle: React.CSSProperties = {
+    background: colorFillAlter,
+    borderRadius: borderRadiusLG,
+    border: 'none',
+  };
 
   return (
     <PageContainer content="将一个冗长或用户不熟悉的表单任务分成多个步骤，指导用户完成。">
@@ -50,7 +66,39 @@ const StepForm: React.FC<Record<string, any>> = () => {
             render: (props, dom) => {
               if (props.step === 1) {
                 return [
-                  <Button type="primary" key="preview" onClick={() => {}}>
+                  <Button
+                    loading={splitPreviewLoading}
+                    type="primary"
+                    key="preview"
+                    onClick={() => {
+                      const data = {
+                        projectId: Number.parseInt(searchParams.get('projectId') || '0'),
+                        jobName: stepData.jobName,
+                        type: stepData.type,
+                        createUser: 'openspg',
+                        lifeCycle: 'ONCE',
+                        action: 'UPSERT',
+                        computingConf: '',
+                        dependence: 'INDEPENDENT',
+                        cron: '0 0 0 * * ?',
+                        fileUrl: stepData.fileUrl[0]?.response?.result,
+                        dataSourceType: stepData.fileUrl[0]?.name?.split('.')?.pop()?.toUpperCase(),
+                        extension: JSON.stringify({
+                          splitConfig: {
+                            splitLength: stepData.splitConfig_splitLength,
+                            semanticSplit: !!stepData.splitConfig_semanticSplit,
+                          },
+                        }),
+                      };
+                      setSplitPreviewLoading(true);
+                      getSplitPreview(data).then((res) => {
+                        if (res.success) {
+                          setSplitPreviews(res.result.map((item, index) => ({id: index, content: item})));
+                          setSplitPreviewLoading(false);
+                        }
+                      });
+                    }}
+                  >
                     预览抽取结果
                   </Button>,
                   <Button key="pre" onClick={() => props.onPre?.()}>
@@ -118,7 +166,9 @@ const StepForm: React.FC<Record<string, any>> = () => {
             title="基础配置"
             initialValues={stepData}
             onFinish={async (values) => {
-              console.log('step 1', values);
+              setStepData((prevState) => {
+                return { ...prevState, ...values };
+              });
               return true;
             }}
           >
@@ -225,33 +275,84 @@ const StepForm: React.FC<Record<string, any>> = () => {
             }
           </StepsForm.StepForm>
 
-          <StepsForm.StepForm<StepDataType> initialValues={stepData} title="分段配置/映射配置">
-            <ProFormDigit
-              label="分段最大长度"
-              name="splitConfig_splitLength"
-              min={100}
-              fieldProps={{ precision: 0 }}
-              rules={[
-                {
-                  required: true,
-                  message: '请输入分段最大长度',
-                },
-              ]}
-            />
-            <ProFormCheckbox.Group
-              name="splitConfig_semanticSplit"
-              layout="vertical"
-              label="分段处理"
-              options={[
-                {
-                  label:
-                    '根据文档语义切分文档（按语义切分可能耗时较长，段落长度可能小于分段最大长度）',
-                  value: '1',
-                },
-              ]}
-            />
+          <StepsForm.StepForm<StepDataType>
+            initialValues={stepData}
+            title="分段配置/映射配置"
+            onFinish={async (values) => {
+              setStepData((prevState) => {
+                return { ...prevState, ...values };
+              });
+              return true;
+            }}
+          >
+            <Flex>
+              <Flex vertical={true}>
+                <ProFormDigit
+                  label="分段最大长度"
+                  name="splitConfig_splitLength"
+                  min={100}
+                  fieldProps={{ precision: 0 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: '请输入分段最大长度',
+                    },
+                  ]}
+                />
+                <ProFormCheckbox.Group
+                  name="splitConfig_semanticSplit"
+                  layout="vertical"
+                  label="分段处理"
+                  options={[
+                    {
+                      label:
+                        '根据文档语义切分文档（按语义切分可能耗时较长，段落长度可能小于分段最大长度）',
+                      value: '1',
+                    },
+                  ]}
+                />
+              </Flex>
+              {splitPreviews && splitPreviews.length > 0 && (
+                <List
+                  style={{maxWidth: '50%'}}
+                  pagination={{pageSize: 5}}
+                  size="small"
+                  header={false}
+                  footer={false}
+                  bordered
+                  dataSource={splitPreviews}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <Collapse
+                        bordered={false}
+                        defaultActiveKey={['1']}
+                        expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+                        style={{ background: colorBgContainer, width:'100%' }}
+                        items={[
+                          {
+                            key: 'item-' + item.id,
+                            label: '分段' + item.id,
+                            children: <p>{item.content}</p>,
+                            style: panelStyle,
+                          }
+                        ]}
+                      />
+                    </List.Item>
+                  )}
+                />
+              )}
+            </Flex>
           </StepsForm.StepForm>
-          <StepsForm.StepForm<StepDataType> initialValues={stepData} title="抽取配置/导入配置">
+          <StepsForm.StepForm<StepDataType>
+            initialValues={stepData}
+            title="抽取配置/导入配置"
+            onFinish={async (values) => {
+              setStepData((prevState) => {
+                return { ...prevState, ...values };
+              });
+              return true;
+            }}
+          >
             <ProFormSelect
               name="extractConfig_llm"
               label="抽取模型"

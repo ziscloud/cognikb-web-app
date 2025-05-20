@@ -52,20 +52,22 @@ export type TaskLogEdgeItem = {
 }
 
 export type ModelingTaskItem = {
-  id: number;
+  id?: number;
   projectId: number;
-  gmtCreate: string;
-  gmtModified: string;
-  modifyUser: string;
+  gmtCreate?: string;
+  gmtModified?: string;
+  modifyUser?: string;
   createUser: string;
-  taskId: number;
+  dependence?: string;
+  cron?: string;
+  taskId?: number;
   jobName: string;
   fileUrl: string;
-  status: string;
+  status?: string;
   dataSourceType: string;
   type: string;
   extension: string;
-  version: string;
+  version?: string;
   computingConf: string;
   lifeCycle: string;
   action: string;
