@@ -41,6 +41,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import useStyles from './style.style';
 import './styles.css';
 
+const { REACT_APP_ENV = 'dev' } = process.env;
 const KnowledgeBaseChat: React.FC = () => {
   const { styles } = useStyles();
   const [messageApi, contextHolder] = message.useMessage();
@@ -67,7 +68,7 @@ const KnowledgeBaseChat: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
 
   const [agent] = useXAgent<BubbleDataType>({
-    baseURL: 'http://localhost:8887/v1/chat/completions',
+    baseURL: (REACT_APP_ENV === 'dev' ? 'http://localhost:8887/' : '') + 'api/v1/chat/completions',
     //baseURL: "https://api.siliconflow.cn/v1/chat/completions",
     //model: 'deepseek-ai/DeepSeek-R1-Distill-Qwen-7B',
     //dangerouslyApiKey: 'Bearer sk-ravoadhrquyrkvaqsgyeufqdgphwxfheifujmaoscudjgldr',
