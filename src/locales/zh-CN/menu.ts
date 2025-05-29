@@ -56,4 +56,9 @@ export default {
   'menu.knowledgebase.modeling-task-detail': '任务详情页',
   'menu.knowledgebase.kb-chat': '知识问答',
   'menu.knowledgebase.modeling': '知识库构建',
+  'menu.setting': '配置',
+  'menu.setting.basic': '通用配置',
+  'menu.setting.model': '模型配置',
+  'menu.setting.users': '用户管理',
+  'menu.setting.datasources': '数据源配置',
 };

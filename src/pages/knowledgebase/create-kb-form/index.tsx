@@ -11,17 +11,20 @@ import { useRequest } from '@umijs/max';
 import { Card, message } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import { createProject, queryConfig } from './service';
+import { useNavigate } from '@@/exports';
 
 const BasicForm: FC<Record<string, any>> = () => {
   const [graphStore, setGraphStore] = useState<API.GraphStore>();
   const [vectorizer, setVectorizer] = useState<API.VectorizerConfig>();
   const [prompt, setPrompt] = useState<API.PromptConfig>();
+  const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const { run } = useRequest(createProject, {
     manual: true,
     onSuccess: () => {
       message.success('提交成功');
       setSubmitting(false);
+      navigate('/knowledgebase/kb-list');
     },
     onError: () => {
       message.error('提交失败，请重试');
@@ -51,7 +54,7 @@ const BasicForm: FC<Record<string, any>> = () => {
     }
   }, [data]);
   const onFinish = async (values: Record<string, any>) => {
-    const oriConfig: API.Config = JSON.parse(data?.config||"{}");
+    const oriConfig: API.Config = JSON.parse(data?.config || '{}');
     const config = {
       graph_store: {
         ...oriConfig?.graph_store,
@@ -75,19 +78,19 @@ const BasicForm: FC<Record<string, any>> = () => {
         biz_scene: values.prompt_biz_scene,
         language: values.prompt_language,
       },
-      llm_select:[{...oriConfig.llm_select}],
-      llm:{...oriConfig.llm}
+      llm_select: oriConfig.llm_select,
+      llm: oriConfig.llm,
     };
     const body = {
       name: values.name,
       description: values.description,
       namespace: values.namespace,
-      config:JSON.stringify(config),
+      config: JSON.stringify(config),
     };
     setSubmitting(true);
     run(body);
   };
-  return (loading || !graphStore || !vectorizer || !prompt) ? (
+  return loading || !graphStore || !vectorizer || !prompt ? (
     <ProSkeleton type={'descriptions'} />
   ) : (
     <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">

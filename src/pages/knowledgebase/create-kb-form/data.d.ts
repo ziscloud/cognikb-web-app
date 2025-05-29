@@ -26,6 +26,7 @@ declare namespace API {
   };
 
   type LlmConfig = {
+    __customParamKeys: { name: string; value: string }[];
     creator: string;
     default: boolean;
     createTime: string;

@@ -68,7 +68,7 @@ const KnowledgeBaseChat: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
 
   const [agent] = useXAgent<BubbleDataType>({
-    baseURL: (REACT_APP_ENV === 'dev' ? 'http://localhost:8887/' : '') + 'api/v1/chat/completions',
+    baseURL: 'http://43.139.95.184:8887/api/v1/chat/completions',
     //baseURL: "https://api.siliconflow.cn/v1/chat/completions",
     //model: 'deepseek-ai/DeepSeek-R1-Distill-Qwen-7B',
     //dangerouslyApiKey: 'Bearer sk-ravoadhrquyrkvaqsgyeufqdgphwxfheifujmaoscudjgldr',

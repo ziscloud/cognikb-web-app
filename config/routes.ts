@@ -202,7 +202,7 @@ export default [
         name: 'table-list',
         icon: 'smile',
         path: '/list/table-list',
-        component: './table-list',
+        component: './list/table-list',
       },
       {
         name: 'basic-list',
@@ -313,6 +313,41 @@ export default [
         icon: 'smile',
         path: '/account/settings',
         component: './account/settings',
+      },
+    ],
+  },
+  {
+    path: '/setting',
+    name: 'setting',
+    icon: 'setting',
+    routes: [
+      {
+        path: '/setting',
+        redirect: '/setting/basic',
+      },
+      {
+        name: 'basic',
+        icon: 'smile',
+        path: '/setting/basic',
+        component: './setting/basic',
+      },
+      {
+        name: 'model',
+        icon: 'smile',
+        path: '/setting/advanced',
+        component: './setting/advanced',
+      },
+      {
+        name: 'users',
+        icon: 'smile',
+        path: '/setting/users',
+        component: './setting/users',
+      },
+      {
+        name: 'datasources',
+        icon: 'smile',
+        path: '/setting/datasources',
+        component: './setting/datasources',
       },
     ],
   },

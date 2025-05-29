@@ -25,6 +25,7 @@ const BasicForm: FC<Record<string, any>> = () => {
     onSuccess: () => {
       message.success('提交成功');
       setSubmitting(false);
+      navigate('/knowledgebase/kb-list');
     },
     onError: () => {
       message.error('提交失败，请重试');
@@ -88,8 +89,8 @@ const BasicForm: FC<Record<string, any>> = () => {
         biz_scene: values.prompt_biz_scene,
         language: values.prompt_language,
       },
-      llm_select: [{ ...oriConfig.llm_select }],
-      llm: { ...oriConfig.llm },
+      llm_select: oriConfig.llm_select,
+      llm: oriConfig.llm ,
     };
     const body = {
       id: data?.id,

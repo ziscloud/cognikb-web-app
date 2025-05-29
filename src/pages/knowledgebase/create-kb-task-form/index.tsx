@@ -2,8 +2,10 @@ import {
   getLlmSelect,
   postKnowledgeBuildingJob,
 } from '@/pages/knowledgebase/create-kb-task-form/service';
+import { getSplitPreview } from '@/pages/knowledgebase/modeling-task-detail/service';
 import { LlmItem } from '@/pages/knowledgebase/modeling/components/modeling-task-list/data';
-import { useSearchParams } from '@@/exports';
+import { useNavigate, useSearchParams } from '@@/exports';
+import { CaretRightOutlined } from '@ant-design/icons';
 import {
   PageContainer,
   ProFormCheckbox,
@@ -15,24 +17,21 @@ import {
   ProFormUploadButton,
   StepsForm,
 } from '@ant-design/pro-components';
-import { ShowMore } from '@re-dev/react-truncate';
 import { Button, Card, Collapse, Flex, FormInstance, List, message, theme, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { StepDataType } from './data.d';
 import useStyles from './style.style';
-import { getSplitPreview } from '@/pages/knowledgebase/modeling-task-detail/service';
-import { CaretRightOutlined } from '@ant-design/icons';
 
-
-
-const StepForm: React.FC<Record<string, any>> = () => {
+const CreateKBTaskForm: React.FC<Record<string, any>> = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { styles } = useStyles();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   const [messageApi, contextHolder] = message.useMessage();
-  const [splitPreviews, setSplitPreviews] = useState<{id: number, content: string}[]>([]);
-  const [splitPreviewLoading, setSplitPreviewLoading ] = useState(false);
+  const [splitPreviews, setSplitPreviews] = useState<{ id: number; content: string }[]>([]);
+  const [splitPreviewLoading, setSplitPreviewLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [stepData, setStepData] = useState<StepDataType>({
     dataSourceConfig_structure: 'unstructuredContent',
@@ -45,7 +44,7 @@ const StepForm: React.FC<Record<string, any>> = () => {
   const [llmOptions, setLlmOptions] = useState<LlmItem[]>([]);
   const formRef = useRef<FormInstance>();
   const {
-    token: {colorBgContainer, colorFillAlter, borderRadiusLG},
+    token: { colorBgContainer, colorFillAlter, borderRadiusLG },
   } = theme.useToken();
 
   const panelStyle: React.CSSProperties = {
@@ -91,12 +90,22 @@ const StepForm: React.FC<Record<string, any>> = () => {
                         }),
                       };
                       setSplitPreviewLoading(true);
-                      getSplitPreview(data).then((res) => {
-                        if (res.success) {
-                          setSplitPreviews(res.result.map((item, index) => ({id: index, content: item})));
+                      getSplitPreview(data)
+                        .then((res) => {
+                          if (res.success) {
+                            setSplitPreviews(
+                              res.result.map((item, index) => ({ id: index, content: item })),
+                            );
+                            setSplitPreviewLoading(false);
+                          }
+                        })
+                        .catch((error) => {
+                          messageApi.open({
+                            type: 'error',
+                            content: error.message,
+                          });
                           setSplitPreviewLoading(false);
-                        }
-                      });
+                        });
                     }}
                   >
                     预览抽取结果
@@ -111,8 +120,12 @@ const StepForm: React.FC<Record<string, any>> = () => {
               }
               return dom;
             },
+            submitButtonProps: {
+              loading: submitting,
+            },
           }}
           onFinish={async (values) => {
+            setSubmitting(true);
             const body = {
               jobName: values.jobName,
               type: values.type,
@@ -148,7 +161,16 @@ const StepForm: React.FC<Record<string, any>> = () => {
             const response = await postKnowledgeBuildingJob(body);
             if (response.success) {
               formRef.current?.resetFields();
-              messageApi.success('创建成功');
+              messageApi.success({
+                content: '提交成功, 3秒后自动跳转到 “构建任务列表”',
+                onClose: () => {
+                  setSubmitting(false);
+                  navigate(
+                    `/knowledgebase/kb-list/modeling?projectId=${searchParams.get('projectId')}`,
+                  );
+                },
+                duration: 3,
+              });
             } else {
               messageApi.error(
                 <div style={{ maxWidth: '300px' }}>
@@ -158,8 +180,8 @@ const StepForm: React.FC<Record<string, any>> = () => {
                   </Typography.Paragraph>
                 </div>,
               );
+              setSubmitting(false);
             }
-            return response.success;
           }}
         >
           <StepsForm.StepForm<StepDataType>
@@ -314,8 +336,8 @@ const StepForm: React.FC<Record<string, any>> = () => {
               </Flex>
               {splitPreviews && splitPreviews.length > 0 && (
                 <List
-                  style={{maxWidth: '50%'}}
-                  pagination={{pageSize: 5}}
+                  style={{ maxWidth: '50%' }}
+                  pagination={{ pageSize: 5 }}
                   size="small"
                   header={false}
                   footer={false}
@@ -326,15 +348,17 @@ const StepForm: React.FC<Record<string, any>> = () => {
                       <Collapse
                         bordered={false}
                         defaultActiveKey={['1']}
-                        expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-                        style={{ background: colorBgContainer, width:'100%' }}
+                        expandIcon={({ isActive }) => (
+                          <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                        )}
+                        style={{ background: colorBgContainer, width: '100%' }}
                         items={[
                           {
                             key: 'item-' + item.id,
                             label: '分段' + item.id,
                             children: <p>{item.content}</p>,
                             style: panelStyle,
-                          }
+                          },
                         ]}
                       />
                     </List.Item>
@@ -377,4 +401,4 @@ const StepForm: React.FC<Record<string, any>> = () => {
     </PageContainer>
   );
 };
-export default StepForm;
+export default CreateKBTaskForm;
